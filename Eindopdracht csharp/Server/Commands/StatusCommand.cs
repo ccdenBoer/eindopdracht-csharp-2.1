@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Server.Commands
 {
-    public class DataCommand
+    public class StatusCommand
     {
         public string id { get; set; }
         public bool status { get; set; }

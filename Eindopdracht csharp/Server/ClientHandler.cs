@@ -11,20 +11,20 @@ using System.Threading;
 
 namespace Server
 {
-    internal class Client
+    internal class ClientHandler
     {
         private TcpClient tcpClient;
         public string Username { get; set; }
 
 
-        public Client(TcpClient tcpClient)
+        public ClientHandler(TcpClient tcpClient)
         {
             this.tcpClient = tcpClient;
             Thread thread = new Thread(HandleClient);
             thread.Start();
         }
         
-        public Client()
+        public ClientHandler()
         {
             this.tcpClient = null;
         }
@@ -33,7 +33,9 @@ namespace Server
         {
             while (true)
             {
+                Console.WriteLine("awaiting message");
                 dynamic message = JsonConvert.DeserializeObject(ReadJsonMessage(tcpClient));
+                Console.WriteLine("message received: " + message);
                 string id = "";
                 try
                 {
@@ -95,6 +97,8 @@ namespace Server
                         Console.WriteLine("received unknown message:\n" + message);
                         break;
                 }
+
+                Console.WriteLine("yee");
             }
         }
         
@@ -111,14 +115,16 @@ namespace Server
         {
             var stream = new StreamReader(client.GetStream(), Encoding.ASCII);
             {
+                Console.WriteLine("reading message");
                 string message = "";
                 string line = "";
                 
                 while (stream.Peek() != -1)
                 {
+                    Console.WriteLine("message: " + message);
                     message += stream.ReadLine();
                 }
-                
+                Console.WriteLine("finished message");
                 return message;
             }
         }

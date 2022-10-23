@@ -12,9 +12,12 @@ namespace Eindopdracht_csharp
 {
     public partial class ChatUsersScreen : Form
     {
+        private List<string> availableUsers;
         public ChatUsersScreen()
         {
             InitializeComponent();
+
+            availableUsers = new List<string>();
 
             lstChatView.Items.Add("1");
             lstChatView.Items.Add("2");

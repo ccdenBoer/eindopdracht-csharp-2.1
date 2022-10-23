@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Server;
+using Server.Commands;
 using static System.Collections.Specialized.BitVector32;
 
 namespace Eindopdracht_csharp
@@ -36,15 +36,21 @@ namespace Eindopdracht_csharp
             this.tcpClient = new TcpClient(ip, port);
 
             //JObject loginRequest = JObject.Parse(ReadJsonMessage(tcpClient));
-            Command loginCommand = new Command()
+            DataCommand loginCommand = new DataCommand()
             {
                 id = "login",
-                data = "true"
+                data = "Coen"
             };
 
             Thread.Sleep(500);
 
-            WriteJsonMessage(tcpClient, JsonConvert.SerializeObject(loginCommand));
+            Console.WriteLine(JsonConvert.SerializeObject(loginCommand));
+
+            //WriteMessage(tcpClient, JsonConvert.SerializeObject(loginCommand));
+
+            SendData(JsonConvert.SerializeObject(loginCommand), tcpClient);
+
+            
 
             try
             {
@@ -77,10 +83,10 @@ namespace Eindopdracht_csharp
                     //server checks if login info already exists
                     case "login":
                         JObject loginRequest = JObject.Parse(ReadJsonMessage(tcpClient));
-                        Command loginCommand = new Command()
+                        StatusCommand loginCommand = new StatusCommand()
                         {
                             id = "login",
-                            data = "true"
+                            status = true
                         };
                         ;
                         WriteJsonMessage(tcpClient, JsonConvert.SerializeObject(loginCommand));
@@ -94,20 +100,6 @@ namespace Eindopdracht_csharp
             }
         }
 
-        public static JObject ReadMessage(TcpClient client)
-        {
-            var stream = new StreamReader(client.GetStream(), Encoding.ASCII);
-            {
-                string message = "";
-                string line = "";
-                while (stream.Peek() != -1)
-                {
-                    message += stream.ReadLine();
-                }
-
-                return JObject.Parse(message);
-            }
-        }
         public static string ReadJsonMessage(TcpClient client)
         {
             var stream = new StreamReader(client.GetStream(), Encoding.ASCII);
@@ -141,6 +133,16 @@ namespace Eindopdracht_csharp
             {
                 stream.Write(jsonMessage);
                 stream.Flush();
+            }
+        }
+
+        private static void SendData(string ob, TcpClient tcpClient)
+        {
+            var stream = new StreamWriter(tcpClient.GetStream(), Encoding.ASCII);
+            {
+                stream.Write(ob + "\n");
+                stream.Flush();
+                Console.WriteLine("sent!");
             }
         }
     }

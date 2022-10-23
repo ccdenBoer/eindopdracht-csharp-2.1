@@ -33,6 +33,8 @@ namespace Eindopdracht_csharp
         [STAThread]
         static void Main()
         {
+
+
             Client client = new Client("127.0.0.1", 15243);
 
             loginScreen = new LoginScreen1();
