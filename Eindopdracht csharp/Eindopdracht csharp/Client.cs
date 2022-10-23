@@ -1,35 +1,70 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Server.Commands;
-using Server.DataSaving;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Data;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Net.Security;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading;
+using System.Text.Json.Nodes;
+using System.Threading.Tasks;
+using System.Xml.Linq;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Server.Commands;
+using static System.Collections.Specialized.BitVector32;
 
-namespace Server
+namespace Eindopdracht_csharp
 {
-    internal class Client
+
+    public class Client
     {
+        private int port;
+        private IPAddress address;
+
         private TcpClient tcpClient;
-        public string Username { get; set; }
+        private NetworkStream stream;
+        private byte[] buffer = new byte[1024];
+        private string totalBuffer = "";
 
-
-        public Client(TcpClient tcpClient)
+        public static bool IsRunning { get; private set; } = false;
+        public Client(string ip, int port)
         {
-            this.tcpClient = tcpClient;
-            Thread thread = new Thread(HandleClient);
-            thread.Start();
+            address = IPAddress.Parse(ip);
+            this.port = port;
+            this.tcpClient = new TcpClient(ip, port);
+
+            //JObject loginRequest = JObject.Parse(ReadJsonMessage(tcpClient));
+            DataCommand loginCommand = new DataCommand()
+            {
+                id = "login",
+                data = "Coen",
+            };
+
+            Thread.Sleep(500);
+
+            Console.WriteLine(JsonConvert.SerializeObject(loginCommand));
+
+            //WriteMessage(tcpClient, JsonConvert.SerializeObject(loginCommand));
+
+            SendData(JsonConvert.SerializeObject(loginCommand), tcpClient);
+
+            
+
+            try
+            {
+                new Thread(Listen).Start();
+                IsRunning = true;
+            }
+            catch (Exception ex)
+            {
+
+            }
+
         }
 
-        public Client()
-        {
-            this.tcpClient = null;
-        }
-
-        public void HandleClient()
+        private void Listen()
         {
             while (true)
             {
@@ -45,66 +80,27 @@ namespace Server
                 }
                 switch (id)
                 {
-                    //server checks if login info is available
+                    //server checks if login info already exists
                     case "login":
                         {
-                            bool status;
-
-                            if (DataSaver.ClientExists(message.data()))
-                            {
-                                status = true;
-                            }
-                            else
-                            {
-                                status = false;
-                                this.Username = message.data();
-                            }
+                            JObject loginRequest = JObject.Parse(ReadJsonMessage(tcpClient));
                             StatusCommand loginCommand = new StatusCommand()
                             {
                                 id = "login",
-                                status = status
+                                status = true
                             };
+                            ;
                             WriteJsonMessage(tcpClient, JsonConvert.SerializeObject(loginCommand));
-                            break;
-                        }
-
-                    //server checks if register info is available
-                    case "register":
-                        {
-                            bool status;
-
-                            if (DataSaver.ClientExists(message.data()))
-                            {
-                                status = false;
-                            }
-                            else
-                            {
-                                status = true;
-                            }
-                            StatusCommand registerCommand = new StatusCommand()
-                            {
-                                id = "login",
-                                status = status
-
-                            };
-                            WriteJsonMessage(tcpClient, JsonConvert.SerializeObject(registerCommand));
                             break;
                         }
 
                     //error
                     default:
-                        Console.WriteLine("received unknown message:\n" + message);
-                        break;
+                        {
+                            Console.WriteLine("received unknown message:\n" + message);
+                            break;
+                        }
                 }
-            }
-        }
-
-        public static void WriteJsonMessage(TcpClient client, string jsonMessage)
-        {
-            var stream = new StreamWriter(client.GetStream(), Encoding.ASCII);
-            {
-                stream.Write(jsonMessage);
-                stream.Flush();
             }
         }
 
@@ -121,6 +117,36 @@ namespace Server
                 }
 
                 return message;
+            }
+        }
+
+        public static void WriteMessage(TcpClient client, JObject jObject)
+        {
+            string jMessage = jObject.ToString();
+            var stream = new StreamWriter(client.GetStream(), Encoding.ASCII);
+            byte[] RequestLength = BitConverter.GetBytes(jMessage.Length);
+            byte[] request = Encoding.ASCII.GetBytes(jMessage);
+            {
+                stream.BaseStream.Write(request, 0, RequestLength.Length);
+            }
+        }
+
+        public static void WriteJsonMessage(TcpClient client, string jsonMessage)
+        {
+            var stream = new StreamWriter(client.GetStream(), Encoding.ASCII);
+            {
+                stream.Write(jsonMessage);
+                stream.Flush();
+            }
+        }
+
+        private static void SendData(string ob, TcpClient tcpClient)
+        {
+            var stream = new StreamWriter(tcpClient.GetStream(), Encoding.ASCII);
+            {
+                stream.Write(ob + "\n");
+                stream.Flush();
+                Console.WriteLine("sent!");
             }
         }
     }

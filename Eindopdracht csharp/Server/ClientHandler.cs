@@ -51,8 +51,8 @@ namespace Server
                     case "login":
                         {
                             bool status;
-
-                            if (DataSaver.ClientExists(message.data()))
+                            string username = message.data;
+                            if (DataSaver.ClientExists(username))
                             {
                                 status = true;
                             }
