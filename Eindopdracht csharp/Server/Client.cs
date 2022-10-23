@@ -71,7 +71,8 @@ namespace Server
                             break;
                         }
 
-                    case "createAccount":
+                    //server checks if register info already exist
+                    case "register":
                         { 
                             string data = "";
                             if (DataSaver.ClientExists(message.data()))
