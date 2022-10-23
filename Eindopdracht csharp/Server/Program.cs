@@ -7,32 +7,30 @@ namespace Server
     class Program
 
     {
-        private static TcpListener listener;
-        private static List<Client> clients = new List<Client>();
+        private static TcpListener _listener;
+        private static List<Client> _clients = new List<Client>();
 
         static void Main(string[] args)
         {
             Console.WriteLine("Server started");
-            listener = new TcpListener(IPAddress.Any, 15243);
-            listener.Start();
-            listener.BeginAcceptTcpClient(new AsyncCallback(OnConnect), null);
-
-            for (; ; ) ;
+            _listener = new TcpListener(IPAddress.Any, 15243);
+            _listener.Start();
+            _listener.BeginAcceptTcpClient(new AsyncCallback(OnConnect), null);
         }
 
         private static void OnConnect(IAsyncResult ar)
         {
-            var tcpClient = listener.EndAcceptTcpClient(ar);
+            var tcpClient = _listener.EndAcceptTcpClient(ar);
             Console.WriteLine($"Client connected from {tcpClient.Client.RemoteEndPoint}");
             Client newClient = new Client(tcpClient);
-            clients.Add(newClient);
+            _clients.Add(newClient);
             //newClient.ClientLogin();
-            listener.BeginAcceptTcpClient(new AsyncCallback(OnConnect), null);
+            _listener.BeginAcceptTcpClient(new AsyncCallback(OnConnect), null);
         }
 
         internal static void Disconnect(Client client)
         {
-            clients.Remove(client);
+            _clients.Remove(client);
             Console.WriteLine("Client disconnected");
         }
     }

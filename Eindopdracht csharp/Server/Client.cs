@@ -16,16 +16,12 @@ namespace Server
         private NetworkStream stream;
         private byte[] buffer = new byte[1024];
         private string totalBuffer = "";
-
-        public string patientId { get; set; }
-
-        List<JObject> sessionData = new List<JObject>();
+        public string Username { get; set; }
 
 
         public Client(TcpClient tcpClient)
         {
             this.tcpClient = tcpClient;
-            WriteJsonMessage(this.tcpClient, "\r\n");
             Thread thread = new Thread(HandleClient);
             thread.Start();
         }
@@ -53,15 +49,48 @@ namespace Server
                 {
                     //server checks if login info already exists
                     case "login":
-                        JObject loginRequest = JObject.Parse(ReadJsonMessage(tcpClient));
-                        Command loginCommand = new Command()
                         {
-                            id = "login",
-                            data = "true"
-                        };
-                        ;
-                        WriteJsonMessage(tcpClient, JsonConvert.SerializeObject(loginCommand));
-                        break;
+                            string data = "";
+                            if (DataSaver.ClientExists(message.data()))
+                            {
+                                data = "true";
+                            }
+                            else
+                            {
+                                data = "false";
+                                this.Username = message.data();
+                            }
+
+                            Command loginCommand = new Command()
+                            {
+                                id = "login",
+                                data = "true"
+                            };
+                            ;
+                            WriteJsonMessage(tcpClient, JsonConvert.SerializeObject(loginCommand));
+                            break;
+                        }
+
+                    //server checks if register info already exist
+                    case "register":
+                        { 
+                            string data = "";
+                            if (DataSaver.ClientExists(message.data()))
+                            {
+                                data = "false";
+                            }
+                            else
+                            {
+                                data = "true";
+                            }
+                            Command registerCommand = new Command()
+                            {
+                                id = "login",
+                                data = "true"
+                            };
+                            WriteJsonMessage(tcpClient, JsonConvert.SerializeObject(registerCommand));
+                            break;
+                        }
 
                     //error
                     default:
@@ -71,25 +100,11 @@ namespace Server
             }
         }
 
-        public void SaveSession(List<JObject> sessionData)
-        {
-            DataSaver.AddPatientFile(tcpClient, sessionData);
-        }
-
         public static void WriteJsonMessage(TcpClient client, string jsonMessage)
         {
             var stream = new StreamWriter(client.GetStream(), Encoding.ASCII);
             {
                 stream.Write(jsonMessage);
-                stream.Flush();
-            }
-        }
-
-        public static void WriteTextMessage(TcpClient client, string message)
-        {
-            var stream = new StreamWriter(client.GetStream(), Encoding.ASCII);
-            {
-                stream.Write(message);
                 stream.Flush();
             }
         }
@@ -107,14 +122,6 @@ namespace Server
                 }
                 
                 return message;
-            }
-        }
-
-        public static string ReadTextMessage(TcpClient client)
-        {
-            var stream = new StreamReader(client.GetStream(), Encoding.ASCII);
-            {
-                return stream.ReadLine();
             }
         }
     }
