@@ -48,20 +48,21 @@ namespace Server
                     //server checks if login info is available
                     case "login":
                         {
-                            string data = "";
+                            bool status;
+
                             if (DataSaver.ClientExists(message.data()))
                             {
-                                data = "true";
+                                status = true;
                             }
                             else
                             {
-                                data = "false";
+                                status = false;
                                 this.Username = message.data();
                             }
                             StatusCommand loginCommand = new StatusCommand()
                             {
                                 id = "login",
-                                status = true
+                                status = status
                             };
                             WriteJsonMessage(tcpClient, JsonConvert.SerializeObject(loginCommand));
                             break;
