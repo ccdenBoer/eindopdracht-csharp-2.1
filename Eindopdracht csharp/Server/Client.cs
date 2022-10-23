@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Server.Commands;
 using Server.DataSaving;
 using System;
 using System.Collections.Generic;
@@ -13,9 +14,6 @@ namespace Server
     internal class Client
     {
         private TcpClient tcpClient;
-        private NetworkStream stream;
-        private byte[] buffer = new byte[1024];
-        private string totalBuffer = "";
         public string Username { get; set; }
 
 
@@ -33,7 +31,7 @@ namespace Server
 
         public void HandleClient()
         {
-            while(true)
+            while (true)
             {
                 dynamic message = JsonConvert.DeserializeObject(ReadJsonMessage(tcpClient));
                 string id = "";
@@ -47,7 +45,7 @@ namespace Server
                 }
                 switch (id)
                 {
-                    //server checks if login info already exists
+                    //server checks if login info is available
                     case "login":
                         {
                             string data = "";
@@ -60,33 +58,33 @@ namespace Server
                                 data = "false";
                                 this.Username = message.data();
                             }
-
-                            Command loginCommand = new Command()
+                            StatusCommand loginCommand = new StatusCommand()
                             {
                                 id = "login",
-                                data = "true"
+                                status = true
                             };
-                            ;
                             WriteJsonMessage(tcpClient, JsonConvert.SerializeObject(loginCommand));
                             break;
                         }
 
-                    //server checks if register info already exist
+                    //server checks if register info is available
                     case "register":
-                        { 
-                            string data = "";
+                        {
+                            bool status;
+
                             if (DataSaver.ClientExists(message.data()))
                             {
-                                data = "false";
+                                status = false;
                             }
                             else
                             {
-                                data = "true";
+                                status = true;
                             }
-                            Command registerCommand = new Command()
+                            StatusCommand registerCommand = new StatusCommand()
                             {
                                 id = "login",
-                                data = "true"
+                                status = status
+
                             };
                             WriteJsonMessage(tcpClient, JsonConvert.SerializeObject(registerCommand));
                             break;
@@ -99,7 +97,7 @@ namespace Server
                 }
             }
         }
-
+        
         public static void WriteJsonMessage(TcpClient client, string jsonMessage)
         {
             var stream = new StreamWriter(client.GetStream(), Encoding.ASCII);
