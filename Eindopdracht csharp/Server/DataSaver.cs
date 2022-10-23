@@ -12,7 +12,7 @@ namespace Server.DataSaving
     internal class DataSaver
     {
 
-        public static void AddNewClient(Client client)
+        public static void AddNewClient(ClientHandler client)
         {
             Console.WriteLine(Environment.CurrentDirectory);
             string directoryPath = Environment.CurrentDirectory + "\\Clients\\" + client.Username;
@@ -30,7 +30,7 @@ namespace Server.DataSaving
             foreach (string clientPath in clientFiles)
             {
                 var clientInJson = JObject.Parse(File.ReadAllText(clientPath));
-                Client client = new Client();
+                ClientHandler client = new ClientHandler();
                 client.Username = clientInJson["patientId"].ToString();
                 if(client.Username == username)
                 {
