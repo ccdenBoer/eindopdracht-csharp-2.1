@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Server
+namespace Server.Commands
 {
-    public class Command
+    public class DataCommand
     {
         public string id { get; set; }
-        public string data { get; set; }
+        public bool status { get; set; }
     }
 }
