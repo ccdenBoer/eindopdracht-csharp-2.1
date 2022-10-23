@@ -68,8 +68,11 @@ namespace Eindopdracht_csharp
         {
             while (true)
             {
+                Console.WriteLine("awaiting message");
                 dynamic message = JsonConvert.DeserializeObject(ReadJsonMessage(tcpClient));
                 string id = "";
+                Console.WriteLine("received " + message);
+
                 try
                 {
                     id = message.id;
@@ -108,13 +111,16 @@ namespace Eindopdracht_csharp
         {
             var stream = new StreamReader(client.GetStream(), Encoding.ASCII);
             {
+                Console.WriteLine("reading message");
                 string message = "";
                 string line = "";
 
                 while (stream.Peek() != -1)
                 {
+                    Console.WriteLine("message: " + message);
                     message += stream.ReadLine();
                 }
+                Console.WriteLine("finished message");
 
                 return message;
             }
