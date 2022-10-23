@@ -57,7 +57,7 @@ namespace Server
                             else
                             {
                                 status = false;
-                                this.Username = message.data();
+                                this.Username = message.data;
                             }
                             StatusCommand loginCommand = new StatusCommand()
                             {
