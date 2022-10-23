@@ -23,7 +23,7 @@ namespace Server
             Thread thread = new Thread(HandleClient);
             thread.Start();
         }
-        
+
         public ClientHandler()
         {
             this.tcpClient = null;
@@ -50,20 +50,21 @@ namespace Server
                     //server checks if login info is available
                     case "login":
                         {
-                            string data = "";
+                            bool status;
+
                             if (DataSaver.ClientExists(message.data()))
                             {
-                                data = "true";
+                                status = true;
                             }
                             else
                             {
-                                data = "false";
+                                status = false;
                                 this.Username = message.data();
                             }
                             StatusCommand loginCommand = new StatusCommand()
                             {
                                 id = "login",
-                                status = true
+                                status = status
                             };
                             WriteJsonMessage(tcpClient, JsonConvert.SerializeObject(loginCommand));
                             break;
@@ -97,11 +98,10 @@ namespace Server
                         Console.WriteLine("received unknown message:\n" + message);
                         break;
                 }
-
                 Console.WriteLine("yee");
             }
         }
-        
+
         public static void WriteJsonMessage(TcpClient client, string jsonMessage)
         {
             var stream = new StreamWriter(client.GetStream(), Encoding.ASCII);
@@ -118,13 +118,14 @@ namespace Server
                 Console.WriteLine("reading message");
                 string message = "";
                 string line = "";
-                
+
                 while (stream.Peek() != -1)
                 {
                     Console.WriteLine("message: " + message);
                     message += stream.ReadLine();
                 }
                 Console.WriteLine("finished message");
+
                 return message;
             }
         }
