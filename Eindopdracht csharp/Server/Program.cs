@@ -16,6 +16,8 @@ namespace Server
             listener = new TcpListener(IPAddress.Any, 15243);
             listener.Start();
             listener.BeginAcceptTcpClient(new AsyncCallback(OnConnect), null);
+
+            for (; ; ) ;
         }
 
         private static void OnConnect(IAsyncResult ar)

@@ -25,9 +25,9 @@ namespace Server
         public Client(TcpClient tcpClient)
         {
             this.tcpClient = tcpClient;
-            WriteJsonMessage(this.tcpClient, okMessage + "\r\n");
+            WriteJsonMessage(this.tcpClient, "\r\n");
             Thread thread = new Thread(HandleClient);
-            thread.Start()
+            thread.Start();
         }
         
         public Client()
@@ -39,7 +39,7 @@ namespace Server
         {
             while(true)
             {
-                dynamic message = JsonConvert.DeserializeObject(ReadJsonMessage(tcpClient);
+                dynamic message = JsonConvert.DeserializeObject(ReadJsonMessage(tcpClient));
                 string id = "";
                 try
                 {
