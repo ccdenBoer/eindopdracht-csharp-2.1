@@ -109,7 +109,7 @@ namespace Server
                         }
                     case "send":
                         {
-                            DataSaver.WriteMessageFile(this, message.otherClient, message);
+                            DataSaver.WriteMessageFile(this.Username, message.otherClient, message);
                             break;
                         }
                     case "accounts":

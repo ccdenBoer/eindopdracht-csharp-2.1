@@ -32,15 +32,15 @@ namespace Server
             //open chat
             Console.WriteLine(string.Join("\n", DataSaver.GetMessageFile(momin, "coen")) + "\n");
             //write message
-            DataSaver.WriteMessageFile(momin, "coen", "ey");
+            DataSaver.WriteMessageFile("momin", "coen", "ey");
             //refresh 
             Console.WriteLine(string.Join("\n", DataSaver.GetMessageFile(momin, "coen")) + "\n");
             //write message
-            DataSaver.WriteMessageFile(coen, "momin", "yo");
+            DataSaver.WriteMessageFile("momin", "momin", "yo");
             //refresh 
             Console.WriteLine(string.Join("\n", DataSaver.GetMessageFile(momin, "coen")) + "\n");
             //write message
-            DataSaver.WriteMessageFile(momin, "coen", "wow je reageert");
+            DataSaver.WriteMessageFile("momn", "coen", "wow je reageert");
             //refresh 
             Console.WriteLine(string.Join("\n", DataSaver.GetMessageFile(momin, "coen")) + "\n");
 
