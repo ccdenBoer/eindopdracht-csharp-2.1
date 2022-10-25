@@ -14,6 +14,7 @@ namespace Server.DataSaving
 
         public static void AddNewClient(ClientHandler client)
         {
+            Console.WriteLine("huh");
             Console.WriteLine(Environment.CurrentDirectory);
             string directoryPath = Environment.CurrentDirectory + "\\Clients\\" + client.Username;
             Directory.CreateDirectory(directoryPath);

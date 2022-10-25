@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Server.DataSaving;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 
@@ -12,6 +13,10 @@ namespace Server
 
         static void Main(string[] args)
         {
+            DataSaver.AddNewClient(new ClientHandler()
+            {
+                Username = "Coen"
+            });
             Console.WriteLine("Server started");
             _listener = new TcpListener(IPAddress.Any, 15243);
             _listener.Start();

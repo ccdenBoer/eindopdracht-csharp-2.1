@@ -70,7 +70,7 @@ namespace Server
                                 id = "login",
                                 status = status
                             };
-                            WriteJsonMessage(tcpClient, JsonConvert.SerializeObject(loginCommand));
+                            SendData(JsonConvert.SerializeObject(loginCommand), tcpClient);
                             break;
                         }
 
@@ -93,7 +93,7 @@ namespace Server
                                 status = status
 
                             };
-                            WriteJsonMessage(tcpClient, JsonConvert.SerializeObject(registerCommand));
+                            SendData(JsonConvert.SerializeObject(registerCommand), tcpClient);
                             break;
                         }
 
@@ -106,12 +106,13 @@ namespace Server
             }
         }
 
-        public static void WriteJsonMessage(TcpClient client, string jsonMessage)
+        private static void SendData(string ob, TcpClient tcpClient)
         {
-            var stream = new StreamWriter(client.GetStream(), Encoding.ASCII);
+            var stream = new StreamWriter(tcpClient.GetStream(), Encoding.ASCII);
             {
-                stream.Write(jsonMessage);
+                stream.Write(ob + "\n");
                 stream.Flush();
+                Console.WriteLine("sent!");
             }
         }
 
