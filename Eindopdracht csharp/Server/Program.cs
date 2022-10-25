@@ -44,6 +44,7 @@ namespace Server
             //refresh 
             Console.WriteLine(string.Join("\n", DataSaver.GetMessageFile(momin, "coen")) + "\n");
 
+            Console.WriteLine(string.Join("\n", DataSaver.GetAccounts()) + "\n");
 
 
             // Console.WriteLine(DataSaver.ClientExists("test"));

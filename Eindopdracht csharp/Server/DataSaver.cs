@@ -50,5 +50,15 @@ namespace Server.DataSaving
             File.AppendAllText(clientPath, client.Username + ": " + message +Environment.NewLine);
             File.AppendAllText(otherClientPath, client.Username + ": " + message + Environment.NewLine);
         }
+
+        public static string[] GetAccounts()
+        {
+            var accounts = new List<string>();
+            foreach (string clientDirectory in Directory.GetDirectories(Environment.CurrentDirectory + "\\Clients"))
+                accounts.Add(Path.GetFileName(clientDirectory));
+            return accounts.ToArray();
+            
+                
+        }
     }
 }

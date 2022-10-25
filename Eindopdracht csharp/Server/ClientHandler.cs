@@ -96,13 +96,39 @@ namespace Server
                             SendData(JsonConvert.SerializeObject(registerCommand), tcpClient);
                             break;
                         }
+                    case "update":
+                        {
+                            UpdateCommand updateCommand = new UpdateCommand()
+                            {
+                                id = "update",
+                                messages = DataSaver.GetMessageFile(this, message.otherClient)
+
+                            };
+                            SendData(JsonConvert.SerializeObject(updateCommand), tcpClient);
+                            break;
+                        }
+                    case "send":
+                        {
+                            DataSaver.WriteMessageFile(this, message.otherClient, message);
+                            break;
+                        }
+                    case "accounts":
+                        {
+                            UpdateCommand updateCommand = new UpdateCommand()
+                            {
+                                id = "accounts",
+                                messages = DataSaver.GetAccounts()
+
+                            };
+                            SendData(JsonConvert.SerializeObject(updateCommand), tcpClient);
+                            break;
+                        }
 
                     //error
                     default:
                         Console.WriteLine("received unknown message:\n" + message);
                         break;
                 }
-                Console.WriteLine("yee");
             }
         }
 

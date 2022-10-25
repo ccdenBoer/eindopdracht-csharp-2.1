@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Server.Commands
 {
-    public class DataCommand
+    public class UpdateCommand
     {
-        public string id { get; set; } 
-        public string data { get; set; }
+        public string id { get; set; }
+        public string[] messages { get; set; }
     }
 }
