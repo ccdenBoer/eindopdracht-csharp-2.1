@@ -13,10 +13,42 @@ namespace Server
 
         static void Main(string[] args)
         {
-            DataSaver.AddNewClient(new ClientHandler()
+            //DataSaver.AddNewClient(new ClientHandler()
+            //{
+            //    Username = "Momin"
+            //});
+            ClientHandler momin = new ClientHandler()
             {
-                Username = "Coen"
-            });
+                Username = "momin"
+            };
+            ClientHandler coen = new ClientHandler()
+            {
+                Username = "coen"
+            };
+            //create account
+            DataSaver.AddNewClient(momin);
+            DataSaver.AddNewClient(coen);
+
+            //open chat
+            Console.WriteLine(string.Join("\n", DataSaver.GetMessageFile(momin, "coen")) + "\n");
+            //write message
+            DataSaver.WriteMessageFile(momin, "coen", "ey");
+            //refresh 
+            Console.WriteLine(string.Join("\n", DataSaver.GetMessageFile(momin, "coen")) + "\n");
+            //write message
+            DataSaver.WriteMessageFile(coen, "momin", "yo");
+            //refresh 
+            Console.WriteLine(string.Join("\n", DataSaver.GetMessageFile(momin, "coen")) + "\n");
+            //write message
+            DataSaver.WriteMessageFile(momin, "coen", "wow je reageert");
+            //refresh 
+            Console.WriteLine(string.Join("\n", DataSaver.GetMessageFile(momin, "coen")) + "\n");
+
+
+
+            // Console.WriteLine(DataSaver.ClientExists("test"));
+
+
             Console.WriteLine("Server started");
             _listener = new TcpListener(IPAddress.Any, 15243);
             _listener.Start();
