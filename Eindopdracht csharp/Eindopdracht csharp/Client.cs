@@ -10,6 +10,7 @@ using System.Text;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using System.Xml.Xsl;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Server.Commands;
@@ -86,13 +87,34 @@ namespace Eindopdracht_csharp
                     //server checks if login info already exists
                     case "login":
                         {
-                            Command loginCommand = new Command()
+                            if (message.data = true)
                             {
-                                id = "login",
-                                data = true
-                            };
-                            ;
-                            SendData(JsonConvert.SerializeObject(loginCommand), tcpClient);
+                                //login successful
+                            } else
+                            {
+                                //login failed
+                            }
+                            break;
+                        }
+                    case "register":
+                        {
+                            if(message.data = false)
+                            {
+                                //register successful
+                            } else
+                            {
+                                //register failed
+                            }
+                            break;
+                        }
+                    case "update":
+                        {
+                            string[] messages = message.data;
+                            break;
+                        }
+                    case "accounts":
+                        {
+                            string[] accounts = message.data;
                             break;
                         }
 
