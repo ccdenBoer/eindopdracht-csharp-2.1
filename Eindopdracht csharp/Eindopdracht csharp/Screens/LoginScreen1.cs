@@ -31,7 +31,13 @@ namespace Eindopdracht_csharp
         {
             if (txtNameInput.Text.Length > 0 && txtPassword.Text.Length > 0)
             {
-                Program.StartChatUserScreen();
+                if(Client.SendCommand("login", txtNameInput.Text))
+                {
+                    Program.StartChatUserScreen();
+                } else
+                {
+                    txtFeedback.Text = "Username or Password is incorrect";
+                }
             }
             else
             {
@@ -41,6 +47,11 @@ namespace Eindopdracht_csharp
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txtNameInput_TextChanged(object sender, EventArgs e)
         {
 
         }

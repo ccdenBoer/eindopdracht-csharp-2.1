@@ -51,5 +51,10 @@ namespace Eindopdracht_csharp
                 chatScreen.Show();
             }
         }
+
+        private void lstChatView_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

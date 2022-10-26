@@ -25,35 +25,36 @@ namespace Eindopdracht_csharp
         private int port;
         private IPAddress address;
 
-        private TcpClient tcpClient;
+        private static TcpClient tcpClient;
+        private static bool result;
         private NetworkStream stream;
         private byte[] buffer = new byte[1024];
         private string totalBuffer = "";
         private string talkingTo { get; set; }
 
-        public static bool IsRunning { get; private set; } = false;
+        private static bool IsRunning { get; set; } = false;
         public Client(string ip, int port)
         {
             address = IPAddress.Parse(ip);
             this.port = port;
-            this.tcpClient = new TcpClient(ip, port);
+            tcpClient = new TcpClient(ip, port);
             this.talkingTo = null;
 
 
             //JObject loginRequest = JObject.Parse(ReadJsonMessage(tcpClient));
-            Command loginRequest = new Command()
-            {
-                id = "login",
-                data = "Coen",
-            };
+            //Command loginRequest = new Command()
+            //{
+            //    id = "login",
+            //    data = "Coen",
+            //};
 
-            Thread.Sleep(500);
+            //Thread.Sleep(500);
 
-            Console.WriteLine(JsonConvert.SerializeObject(loginRequest));
+            //Console.WriteLine(JsonConvert.SerializeObject(loginRequest));
 
             //WriteMessage(tcpClient, JsonConvert.SerializeObject(loginCommand));
 
-            SendData(JsonConvert.SerializeObject(loginRequest), tcpClient);
+            //SendData(JsonConvert.SerializeObject(loginRequest), tcpClient);
 
 
 
@@ -86,11 +87,13 @@ namespace Eindopdracht_csharp
                 Console.WriteLine("awaiting message");
                 dynamic message = JsonConvert.DeserializeObject(ReadJsonMessage(tcpClient));
                 string id = "";
+                dynamic data = "";
                 Console.WriteLine("received " + message);
 
                 try
                 {
                     id = message.id;
+                    data = data.id;
                 }
                 catch
                 {
@@ -101,18 +104,22 @@ namespace Eindopdracht_csharp
                     //server checks if login info already exists
                     case "login":
                         {
-                            if (message.data = true)
+                            if ((bool)data == true)
                             {
                                 //show gui login successful
+                                result = true;
                             } else
                             {
-                                //show gui login failed
+                                //show gui login failed 
+                                result=false;
                             }
+                            Console.WriteLine("message " + data);
+                            //LoginScreen1.LoginCheck((bool)message.data);
                             break;
                         }
                     case "register":
                         {
-                            if(message.data = false)
+                            if((bool)data == false)
                             {
                                 //show gui register successful
                             } else
@@ -124,13 +131,13 @@ namespace Eindopdracht_csharp
                     case "update":
                         {
                             //show string[] in gui messages
-                            string[] messages = message.data;
+                            string[] messages = (string[])data;
                             break;
                         }
                     case "accounts":
                         {
                             //show string[] in gui accounts to talk to
-                            string[] accounts = message.data;
+                            string[] accounts = (string[])data;
                             break;
                         }
 
@@ -184,7 +191,7 @@ namespace Eindopdracht_csharp
             }
         }
 
-        private static void SendData(string ob, TcpClient tcpClient)
+        public static void SendData(string ob)
         {
             var stream = new StreamWriter(tcpClient.GetStream(), Encoding.ASCII);
             {
@@ -198,14 +205,20 @@ namespace Eindopdracht_csharp
         //"register" send username to the server [string]
         //"update" send username of person it wants to chat to [string]
         //"send" send username of person it wants to chat to and the message it sent Tuple<[string], [string]>
-        private void SendCommand(string id, dynamic data)
+
+       
+        public static bool SendCommand(string id, dynamic data)
         {
             Command command = new Command
             {
                 id = id,
                 data = data
             };
-            SendData(JsonConvert.SerializeObject(command), tcpClient);
+            SendData(JsonConvert.SerializeObject(command));
+            Thread.Sleep(1000);
+
+            return result;
         }
+
     }
 }
