@@ -65,10 +65,10 @@ namespace Server
                                 this.Username = message.data;
 
                             }
-                            StatusCommand loginCommand = new StatusCommand()
+                            Command loginCommand = new Command()
                             {
                                 id = "login",
-                                status = status
+                                data = status
                             };
                             SendData(JsonConvert.SerializeObject(loginCommand), tcpClient);
                             break;
@@ -87,10 +87,10 @@ namespace Server
                             {
                                 status = true;
                             }
-                            StatusCommand registerCommand = new StatusCommand()
+                            Command registerCommand = new Command()
                             {
                                 id = "login",
-                                status = status
+                                data = status
 
                             };
                             SendData(JsonConvert.SerializeObject(registerCommand), tcpClient);
@@ -98,10 +98,10 @@ namespace Server
                         }
                     case "update":
                         {
-                            UpdateCommand updateCommand = new UpdateCommand()
+                            Command updateCommand = new Command()
                             {
                                 id = "update",
-                                messages = DataSaver.GetMessageFile(this.Username, message.otherClient)
+                                data = DataSaver.GetMessageFile(this.Username, message.otherClient)
 
                             };
                             SendData(JsonConvert.SerializeObject(updateCommand), tcpClient);
@@ -114,10 +114,10 @@ namespace Server
                         }
                     case "accounts":
                         {
-                            UpdateCommand updateCommand = new UpdateCommand()
+                            Command updateCommand = new Command()
                             {
                                 id = "accounts",
-                                messages = DataSaver.GetAccounts()
+                                data = DataSaver.GetAccounts()
 
                             };
                             SendData(JsonConvert.SerializeObject(updateCommand), tcpClient);

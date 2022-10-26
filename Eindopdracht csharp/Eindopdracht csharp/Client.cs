@@ -36,7 +36,7 @@ namespace Eindopdracht_csharp
             this.tcpClient = new TcpClient(ip, port);
 
             //JObject loginRequest = JObject.Parse(ReadJsonMessage(tcpClient));
-            DataCommand loginCommand = new DataCommand()
+            Command loginRequest = new Command()
             {
                 id = "login",
                 data = "Coen",
@@ -44,11 +44,11 @@ namespace Eindopdracht_csharp
 
             Thread.Sleep(500);
 
-            Console.WriteLine(JsonConvert.SerializeObject(loginCommand));
+            Console.WriteLine(JsonConvert.SerializeObject(loginRequest));
 
             //WriteMessage(tcpClient, JsonConvert.SerializeObject(loginCommand));
 
-            SendData(JsonConvert.SerializeObject(loginCommand), tcpClient);
+            SendData(JsonConvert.SerializeObject(loginRequest), tcpClient);
 
             
 
@@ -86,14 +86,13 @@ namespace Eindopdracht_csharp
                     //server checks if login info already exists
                     case "login":
                         {
-                            JObject loginRequest = JObject.Parse(ReadJsonMessage(tcpClient));
-                            StatusCommand loginCommand = new StatusCommand()
+                            Command loginCommand = new Command()
                             {
                                 id = "login",
-                                status = true
+                                data = true
                             };
                             ;
-                            WriteJsonMessage(tcpClient, JsonConvert.SerializeObject(loginCommand));
+                            SendData(JsonConvert.SerializeObject(loginCommand), tcpClient);
                             break;
                         }
 
@@ -126,16 +125,6 @@ namespace Eindopdracht_csharp
             }
         }
 
-        public static void WriteMessage(TcpClient client, JObject jObject)
-        {
-            string jMessage = jObject.ToString();
-            var stream = new StreamWriter(client.GetStream(), Encoding.ASCII);
-            byte[] RequestLength = BitConverter.GetBytes(jMessage.Length);
-            byte[] request = Encoding.ASCII.GetBytes(jMessage);
-            {
-                stream.BaseStream.Write(request, 0, RequestLength.Length);
-            }
-        }
 
         public static void WriteJsonMessage(TcpClient client, string jsonMessage)
         {

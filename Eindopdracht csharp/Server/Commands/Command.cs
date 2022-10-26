@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Server.Commands
 {
-    public class DataCommand
+    public class Command
     {
-        public string id { get; set; } 
-        public string data { get; set; }
+        public string id { get; set; }
+        public dynamic data { get; set; }
     }
 }
