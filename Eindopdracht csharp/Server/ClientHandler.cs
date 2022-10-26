@@ -101,7 +101,7 @@ namespace Server
                             UpdateCommand updateCommand = new UpdateCommand()
                             {
                                 id = "update",
-                                messages = DataSaver.GetMessageFile(this, message.otherClient)
+                                messages = DataSaver.GetMessageFile(this.Username, message.otherClient)
 
                             };
                             SendData(JsonConvert.SerializeObject(updateCommand), tcpClient);
