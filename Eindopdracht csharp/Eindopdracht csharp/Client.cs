@@ -27,7 +27,9 @@ namespace Eindopdracht_csharp
 
         private static TcpClient tcpClient;
         private static dynamic result;
-        private static bool resultIsValid;
+        private static bool resultIsValid = false;
+        private static bool accountsIsValid;
+        private static string[] accounts;
         private NetworkStream stream;
         private byte[] buffer = new byte[1024];
         private string totalBuffer = "";
@@ -139,9 +141,9 @@ namespace Eindopdracht_csharp
                         }
                     case "accounts":
                         {
-
                             //show string[] in gui accounts to talk to
-                            string[] accounts = (string[])data;
+                            accounts = data.ToObject<string[]>();
+                            accountsIsValid = true;
                             break;
                         }
 
@@ -227,6 +229,16 @@ namespace Eindopdracht_csharp
             resultIsValid = false;
             return (bool)result;
         }
-
+        public static string[] GetAccounts()
+        {
+            Console.WriteLine("trying to get account");
+            while (!accountsIsValid)
+            {
+                Thread.Sleep(25);
+            }
+            Console.WriteLine("got accounts");
+            accountsIsValid = false;
+            return accounts;
+        }
     }
 }

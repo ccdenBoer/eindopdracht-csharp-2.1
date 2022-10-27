@@ -46,10 +46,11 @@ namespace Server.DataSaving
             File.AppendAllText(pathOtherClient, client + ": " + message + Environment.NewLine);
         }
 
-        public static string[] GetAccounts()
+        public static string[] GetAccounts(string client)
         {
             var accounts = new List<string>();
             foreach (string clientDirectory in Directory.GetDirectories(Path.Combine(Environment.CurrentDirectory, "Clients")))
+                if (clientDirectory != Path.Combine(Environment.CurrentDirectory, "Clients", client))
                 accounts.Add(Path.GetFileName(clientDirectory));
             return accounts.ToArray();       
         }

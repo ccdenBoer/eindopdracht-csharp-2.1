@@ -63,6 +63,13 @@ namespace Server
 
                             {
                                 status = true;
+                                Command accountsCommand = new Command()
+                                {
+                                    id = "accounts",
+                                    data = DataSaver.GetAccounts(username)
+
+                                };
+                                SendData(JsonConvert.SerializeObject(accountsCommand), tcpClient);
                             }
                             else
                             {
@@ -93,6 +100,13 @@ namespace Server
                             {
                                 status = true;
                                 DataSaver.AddNewClient((string)message.data);
+                                Command accountsCommand = new Command()
+                                {
+                                    id = "accounts",
+                                    data = DataSaver.GetAccounts(Username)
+
+                                };
+                                SendData(JsonConvert.SerializeObject(accountsCommand), tcpClient);
                             }
                             Command registerCommand = new Command()
                             {
@@ -124,7 +138,7 @@ namespace Server
                             Command updateCommand = new Command()
                             {
                                 id = "accounts",
-                                data = DataSaver.GetAccounts()
+                                data = DataSaver.GetAccounts(Username)
 
                             };
                             SendData(JsonConvert.SerializeObject(updateCommand), tcpClient);
