@@ -40,7 +40,7 @@ namespace Server
             //refresh 
             Console.WriteLine(string.Join("\n", DataSaver.GetMessageFile("momin", "coen")) + "\n");
             //write message
-            DataSaver.WriteMessageFile("momin", "momin", "yo");
+            DataSaver.WriteMessageFile("coen", "momin", "yo");
             //refresh 
             Console.WriteLine(string.Join("\n", DataSaver.GetMessageFile("momin", "coen")) + "\n");
             //write message

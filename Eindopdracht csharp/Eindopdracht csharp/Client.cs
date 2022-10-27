@@ -26,7 +26,8 @@ namespace Eindopdracht_csharp
         private IPAddress address;
 
         private static TcpClient tcpClient;
-        private static bool result;
+        private static dynamic result;
+        private static bool resultIsValid;
         private NetworkStream stream;
         private byte[] buffer = new byte[1024];
         private string totalBuffer = "";
@@ -38,7 +39,7 @@ namespace Eindopdracht_csharp
             address = IPAddress.Parse(ip);
             this.port = port;
             tcpClient = new TcpClient(ip, port);
-            this.talkingTo = null;
+            this.talkingTo = "";
 
 
             //JObject loginRequest = JObject.Parse(ReadJsonMessage(tcpClient));
@@ -70,7 +71,7 @@ namespace Eindopdracht_csharp
 
             try
             {
-                new Thread(Update).Start();
+                //new Thread(Update).Start();
                 IsRunning = true;
             }
             catch (Exception ex)
@@ -104,6 +105,7 @@ namespace Eindopdracht_csharp
                     //server checks if login info already exists
                     case "login":
                         {
+                            resultIsValid = true;
                             if ((bool)data == true)
                             {
                                 //show gui login successful
@@ -215,9 +217,13 @@ namespace Eindopdracht_csharp
                 data = data
             };
             SendData(JsonConvert.SerializeObject(command));
-            Thread.Sleep(1000);
 
-            return result;
+            while(!resultIsValid)
+            {
+                Thread.Sleep(25);
+            }
+            resultIsValid = false;
+            return (bool)result;
         }
 
     }
