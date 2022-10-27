@@ -37,6 +37,10 @@ namespace Server
                 dynamic message = JsonConvert.DeserializeObject(ReadJsonMessage(tcpClient));
                 Console.WriteLine("message received: " + message);
                 string id = "";
+                if(message == null)
+                {
+                    Program.Disconnect(this);
+                }
                 try
                 {
                     id = message.id;

@@ -93,7 +93,7 @@ namespace Eindopdracht_csharp
                 try
                 {
                     id = message.id;
-                    data = data.id;
+                    data = message.data;
                 }
                 catch
                 {
