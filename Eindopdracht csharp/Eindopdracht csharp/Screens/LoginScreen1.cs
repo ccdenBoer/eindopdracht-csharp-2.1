@@ -55,5 +55,24 @@ namespace Eindopdracht_csharp
         {
 
         }
+
+        private void btnCreate_Click(object sender, EventArgs e)
+        {
+            if (txtNameInput.Text.Length > 0 && txtPassword.Text.Length > 0)
+            {
+                if (Client.SendCommand("register", txtNameInput.Text))
+                {
+                    Program.StartChatUserScreen();
+                }
+                else
+                {
+                    txtFeedback.Text = "Account already exists";
+                }
+            }
+            else
+            {
+                txtFeedback.Text = "Username or Password not filled in";
+            }
+        }
     }
 }

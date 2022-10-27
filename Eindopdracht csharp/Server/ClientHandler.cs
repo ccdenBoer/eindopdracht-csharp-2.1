@@ -39,7 +39,9 @@ namespace Server
                 string id = "";
                 if(message == null)
                 {
+                    Console.WriteLine("trying to disconnect");
                     Program.Disconnect(this);
+                    break;
                 }
                 try
                 {
@@ -83,13 +85,14 @@ namespace Server
                         {
                             bool status;
 
-                            if (DataSaver.ClientExists(message.data()))
+                            if (DataSaver.ClientExists((string)message.data))
                             {
                                 status = false;
                             }
                             else
                             {
                                 status = true;
+                                DataSaver.AddNewClient((string)message.data);
                             }
                             Command registerCommand = new Command()
                             {

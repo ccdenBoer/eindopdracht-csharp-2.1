@@ -121,7 +121,8 @@ namespace Eindopdracht_csharp
                         }
                     case "register":
                         {
-                            if((bool)data == false)
+                            resultIsValid = true;
+                            if ((bool)data == false)
                             {
                                 //show gui register successful
                             } else
@@ -138,6 +139,7 @@ namespace Eindopdracht_csharp
                         }
                     case "accounts":
                         {
+
                             //show string[] in gui accounts to talk to
                             string[] accounts = (string[])data;
                             break;
