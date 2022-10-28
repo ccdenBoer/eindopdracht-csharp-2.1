@@ -120,7 +120,7 @@ namespace Eindopdracht_csharp
                                 result = false;
                             }*/
                             Console.WriteLine("message " + data);
-                            Program.loginScreen.Login((bool?)data);
+                            Program.loginScreen.AuthenticateLogin((bool?)data);
 
                             break;
                         }
@@ -186,22 +186,32 @@ namespace Eindopdracht_csharp
         }
         private static void RefreshChat(string[][] messages)
         {
-            ChatUsersScreen.chatScreens.ForEach(screen =>
+            ChatUsersScreen.chatScreens.ForEach(async screen =>
             {
                 if (screen.chatName == messages[0][0])
                 {
-                    screen.Update(messages);
+                    if (!screen.IsDisposed)
+                    {
+                        await Task.Run(() =>
+                        {
+                            screen.Update(messages);
+                        });
+                    }
+                    
                 }
             });
         }
 
         public static void AddMessage(string[] message)
         {
-            ChatUsersScreen.chatScreens.ForEach(screen =>
+            ChatUsersScreen.chatScreens.ForEach(async screen =>
             {
-                if (screen.chatName == messages[0])
+                if (!screen.IsDisposed && screen.chatName == messages[0])
                 {
-                    screen.AddMessage(messages[0], message[1], message[2]);
+                    await Task.Run(() =>
+                    {
+                        screen.AddMessage(messages[0], message[1], message[2]);
+                    }); 
                 }
             });
         }

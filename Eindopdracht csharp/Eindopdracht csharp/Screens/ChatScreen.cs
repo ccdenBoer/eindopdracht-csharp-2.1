@@ -54,12 +54,12 @@ namespace Eindopdracht_csharp
             {
                 Command sendMessageCommand = new Command() {
                     id = "send",
-                    data = new Tuple<string, string>(chatName, txtChatInput.Text)
+                    data = new Tuple<string, string, string>(chatName, DateTime.Now.ToString(), txtChatInput.Text)
                 };
                 Console.WriteLine(txtChatInput.Text);
                 Client.SendData(JsonConvert.SerializeObject(sendMessageCommand));
 
-                
+                AddMessage("You", DateTime.Now.ToString(), txtChatInput.Text);
                 
                 //reset the chat input
                 txtChatInput.Text = "";
@@ -80,9 +80,13 @@ namespace Eindopdracht_csharp
                 {
                     continue;
                 }
-                else
+                else if(message[0] == chatName)
                 {
                     AddMessage(message[0], message[1], message[2]);
+                }
+                else
+                {
+                    AddMessage("You", message[1], message[2]);
                 }
             }
         }

@@ -40,7 +40,7 @@ namespace Eindopdracht_csharp
             }
             
         }
-        public void Login(bool? authentication)
+        public void AuthenticateLogin(bool? authentication)
         {
             Invoke(new Action(() =>
             {
