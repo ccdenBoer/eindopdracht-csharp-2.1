@@ -25,7 +25,7 @@ namespace Server.DataSaving
             return Directory.Exists(Path.Combine(Environment.CurrentDirectory, "Clients", username));
         }
 
-        public static string[] GetMessageFile(string client, string otherClient)
+        public static string[][] GetMessageFile(string client, string otherClient)
         {
             string pathClient = Path.Combine(Environment.CurrentDirectory, "Clients", client, otherClient);
             string pathOtherClient = Path.Combine(Environment.CurrentDirectory, "Clients", otherClient, client);
@@ -35,8 +35,13 @@ namespace Server.DataSaving
                 File.Create(pathClient).Close();
                 File.Create(pathOtherClient).Close();
             }
-            return File.ReadAllLines(pathClient);
 
+            List<string[]> a  = new List<string[]>();
+            a.Add(new string[] {otherClient, "", "" });
+            foreach (string line in File.ReadAllLines(pathClient))
+                a.Add(line.Split(" "));
+
+            return a.ToArray();
         }
         public static void WriteMessageFile(string client, string otherClient, string time, string message)
         {
