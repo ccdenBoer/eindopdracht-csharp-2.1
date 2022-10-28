@@ -48,7 +48,7 @@ namespace Server.DataSaving
             Console.WriteLine(client + " - " + otherClient+ " - " + message);
             string pathClient = Path.Combine(Environment.CurrentDirectory, "Clients", client, otherClient);
             string pathOtherClient = Path.Combine(Environment.CurrentDirectory, "Clients", otherClient, client);
-            if(GetMessageFile(client, otherClient).Length == 0)
+            if (File.ReadAllLines(pathClient).Length == 0)
             {
                 File.AppendAllText(pathClient, client + "‎" + time + "‎" + message);
                 File.AppendAllText(otherClient, client + "‎" + time + "‎" + message);
