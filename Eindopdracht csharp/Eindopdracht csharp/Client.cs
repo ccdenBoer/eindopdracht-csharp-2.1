@@ -225,7 +225,7 @@ namespace Eindopdracht_csharp
         //"send" send username of person it wants to chat to and the message it sent Tuple<[string], [string]>
 
        
-        public static bool SendCommand(string id, dynamic data)
+        public static bool? SendCommand(string id, dynamic data)
         {
             Command command = new Command
             {
@@ -239,7 +239,7 @@ namespace Eindopdracht_csharp
                 Thread.Sleep(25);
             }
             resultIsValid = false;
-            return (bool)result;
+            return (bool?)result;
         }
         public static string[] GetAccounts()
         {

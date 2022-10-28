@@ -31,13 +31,23 @@ namespace Eindopdracht_csharp
         {
             if (txtNameInput.Text.Length > 0 && txtPassword.Text.Length > 0)
             {
-                if(Client.SendCommand("login", txtNameInput.Text))
+                bool? login = Client.SendCommand("login", txtNameInput.Text);
+                if (login != null)
                 {
-                    Program.StartChatUserScreen();
-                } else
-                {
-                    txtFeedback.Text = "Username or Password is incorrect";
+                    if ((bool)login)
+                    {
+                        Program.StartChatUserScreen();
+                    }
+                    else
+                    {
+                        txtFeedback.Text = "Username or Password is incorrect";
+                    }
                 }
+                else
+                {
+                    txtFeedback.Text = "Error while connecting to server";
+                }
+
             }
             else
             {
@@ -60,14 +70,23 @@ namespace Eindopdracht_csharp
         {
             if (txtNameInput.Text.Length > 0 && txtPassword.Text.Length > 0)
             {
-                if (Client.SendCommand("register", txtNameInput.Text))
+                bool? response = Client.SendCommand("register", txtNameInput.Text);
+                if (response != null)
                 {
-                    Program.StartChatUserScreen();
+                    if ((bool)response)
+                    {
+                        Program.StartChatUserScreen();
+                    }
+                    else
+                    {
+                        txtFeedback.Text = "Account already exists";
+                    }
                 }
                 else
                 {
-                    txtFeedback.Text = "Account already exists";
+                    txtFeedback.Text = "Error connecting to server";
                 }
+
             }
             else
             {

@@ -12,11 +12,14 @@ namespace Eindopdracht_csharp
 {
     public partial class ChatUsersScreen : Form
     {
-        public static List<ChatScreen> chatScreens = new List<ChatScreen>();
+        public List<ChatScreen> chatScreens = new List<ChatScreen>();
+        private string[] accounts;
         public ChatUsersScreen()
         {
             InitializeComponent();
-            string[] accounts = Client.GetAccounts();
+            this.txtSearchInput.KeyPress += new System.Windows.Forms.KeyPressEventHandler(CheckEnterKeyPress);
+
+            accounts = Client.GetAccounts();
             foreach (string account in accounts)
             {
                 Console.WriteLine(account);
@@ -37,6 +40,8 @@ namespace Eindopdracht_csharp
 
         private void btnLogOut_Click(object sender, EventArgs e)
         {
+            chatScreens.ForEach(screen => screen.Close());
+            chatScreens = new List<ChatScreen>();
             Program.LogOut();
         }
 
@@ -78,7 +83,34 @@ namespace Eindopdracht_csharp
             }
         }
 
+        private void CheckEnterKeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
+        {
+
+            if (e.KeyChar == (char)Keys.Return)
+            {
+                //ListView.ListViewItemCollection items = lstChatView.Items;
+                string searchInput = txtSearchInput.Text;
+                //ColumnHeader header = lstChatView.Columns[0];
+                lstChatView.Items.Clear();
+
+                for (int i = 0; i < accounts.Count(); i++)
+                {
+                    Console.WriteLine("searching");
+                    if (accounts[i].ToLower().Contains(searchInput.ToLower()))
+                    {
+                        lstChatView.Items.Add(accounts[i]);
+                    }
+                }
+
+            }
+        }
+
         private void lstChatView_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txtSearchInput_TextChanged(object sender, EventArgs e)
         {
 
         }
