@@ -131,8 +131,8 @@ namespace Server
                         }
                     case "send":
                         {
-                            Console.WriteLine((string)message.data.Item1 + " - " + (string)message.data.Item2);
-                            //DataSaver.WriteMessageFile(this.username, (string)message.data.Item1, (string)message.data.Item2);
+                            //Console.WriteLine((string)message.data.Item1 + " - " + (string)message.data.Item2);
+                            DataSaver.WriteMessageFile(this.username, (string)message.data.Item1, (string)message.data.Item2);
                             foreach (ClientHandler clientHandler in Program._clients)
                             {
                                 if (clientHandler.username == (string)message.data.Item1)
