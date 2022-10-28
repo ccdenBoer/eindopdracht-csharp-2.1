@@ -89,19 +89,24 @@ namespace Eindopdracht_csharp
             if (e.KeyChar == (char)Keys.Return)
             {
                 //ListView.ListViewItemCollection items = lstChatView.Items;
-                string searchInput = txtSearchInput.Text;
+
                 //ColumnHeader header = lstChatView.Columns[0];
-                lstChatView.Items.Clear();
+                SearchAccountsList(txtSearchInput.Text);
 
-                for (int i = 0; i < accounts.Count(); i++)
+            }
+        }
+
+        private void SearchAccountsList(string searchInput)
+        {
+            lstChatView.Items.Clear();
+
+            for (int i = 0; i < accounts.Count(); i++)
+            {
+                Console.WriteLine("searching");
+                if (accounts[i].ToLower().Contains(searchInput.ToLower()))
                 {
-                    Console.WriteLine("searching");
-                    if (accounts[i].ToLower().Contains(searchInput.ToLower()))
-                    {
-                        lstChatView.Items.Add(accounts[i]);
-                    }
+                    lstChatView.Items.Add(accounts[i]);
                 }
-
             }
         }
 
@@ -113,6 +118,12 @@ namespace Eindopdracht_csharp
         private void txtSearchInput_TextChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void btnRefresh_Click(object sender, EventArgs e)
+        {
+            accounts = Client.GetAccounts();
+            SearchAccountsList("");
         }
     }
 }

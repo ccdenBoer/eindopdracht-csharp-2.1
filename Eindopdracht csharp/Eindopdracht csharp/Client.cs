@@ -142,15 +142,14 @@ namespace Eindopdracht_csharp
                         {
                             //show string[] in gui messages
                             //messages = data.ToObject<string[]>();
-                            RefreshChat(data.ToObject<string[][]>());
+                            Task.Run(async() => await RefreshChat(data.ToObject<string[][]>()));
                             break;
                         }
                     case "addMessage":
                         {
-                            AddMessage(data.ToObject < string[]>());
+                            Task.Run(async () => await AddMessage(data.ToObject < string[]>()));
                             break;
                         }
-                        break;
                     case "accounts":
                         {
                             //show string[] in gui accounts to talk to
@@ -274,6 +273,8 @@ namespace Eindopdracht_csharp
         public static string[] GetAccounts()
         {
             Console.WriteLine("trying to get account");
+            SendCommand("accounts", null);
+
             while (!accountsIsValid)
             {
                 Thread.Sleep(25);

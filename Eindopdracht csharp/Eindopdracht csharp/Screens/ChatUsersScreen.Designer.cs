@@ -34,6 +34,7 @@
             this.btnChatSelect = new System.Windows.Forms.Button();
             this.btnLogOut = new System.Windows.Forms.Button();
             this.txtSearchInput = new System.Windows.Forms.TextBox();
+            this.btnRefresh = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // UsersCollomn
@@ -102,11 +103,22 @@
             this.txtSearchInput.TabIndex = 0;
             this.txtSearchInput.TextChanged += new System.EventHandler(this.txtSearchInput_TextChanged);
             // 
+            // btnRefresh
+            // 
+            this.btnRefresh.Location = new System.Drawing.Point(156, 415);
+            this.btnRefresh.Name = "btnRefresh";
+            this.btnRefresh.Size = new System.Drawing.Size(88, 23);
+            this.btnRefresh.TabIndex = 5;
+            this.btnRefresh.Text = "Refresh Users";
+            this.btnRefresh.UseVisualStyleBackColor = true;
+            this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
+            // 
             // ChatUsersScreen
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(256, 450);
+            this.Controls.Add(this.btnRefresh);
             this.Controls.Add(this.txtSearchInput);
             this.Controls.Add(this.btnLogOut);
             this.Controls.Add(this.btnChatSelect);
@@ -128,5 +140,6 @@
         private Button btnChatSelect;
         private Button btnLogOut;
         private TextBox txtSearchInput;
+        private Button btnRefresh;
     }
 }

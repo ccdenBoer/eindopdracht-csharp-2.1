@@ -72,7 +72,7 @@ namespace Eindopdracht_csharp
         }
         public void Update(string[][] messages)
         {
-            btnLoadMore.Enabled = true;
+            Invoke(new Action(() => btnLoadMore.Enabled = true));
             //lstChatView.ResetText();
             foreach (string[] message in messages)
             {
