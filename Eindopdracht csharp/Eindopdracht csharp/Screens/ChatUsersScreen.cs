@@ -12,7 +12,7 @@ namespace Eindopdracht_csharp
 {
     public partial class ChatUsersScreen : Form
     {
-        public List<ChatScreen> chatScreens = new List<ChatScreen>();
+        public static List<ChatScreen> chatScreens = new List<ChatScreen>();
         private string[] accounts;
         public ChatUsersScreen()
         {

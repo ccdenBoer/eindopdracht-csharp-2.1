@@ -33,6 +33,7 @@
             this.SendCollomn = new System.Windows.Forms.ColumnHeader();
             this.txtChatInput = new System.Windows.Forms.TextBox();
             this.btnBack = new System.Windows.Forms.Button();
+            this.btnLoadMore = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // lstChatView
@@ -83,11 +84,22 @@
             this.btnBack.UseVisualStyleBackColor = true;
             this.btnBack.Click += new System.EventHandler(this.btnBack_Click);
             // 
+            // btnLoadMore
+            // 
+            this.btnLoadMore.Location = new System.Drawing.Point(418, 415);
+            this.btnLoadMore.Name = "btnLoadMore";
+            this.btnLoadMore.Size = new System.Drawing.Size(75, 23);
+            this.btnLoadMore.TabIndex = 7;
+            this.btnLoadMore.Text = "Load More";
+            this.btnLoadMore.UseVisualStyleBackColor = true;
+            this.btnLoadMore.Click += new System.EventHandler(this.btnLoadMore_Click);
+            // 
             // ChatScreen
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(509, 450);
+            this.Controls.Add(this.btnLoadMore);
             this.Controls.Add(this.btnBack);
             this.Controls.Add(this.lstChatView);
             this.Controls.Add(this.txtChatInput);
@@ -106,5 +118,6 @@
         private TextBox txtChatInput;
         private ColumnHeader SendCollomn;
         private Button btnBack;
+        private Button btnLoadMore;
     }
 }

@@ -137,10 +137,16 @@ namespace Eindopdracht_csharp
                     case "update":
                         {
                             //show string[] in gui messages
-                            messages = data.ToObject<string[]>();
-                            RefreshChat();
+                            //messages = data.ToObject<string[]>();
+                            RefreshChat(data.ToObject<string[][]>());
                             break;
                         }
+                    case "addMessage":
+                        {
+                            AddMessage(data.ToObject < string[]>());
+                            break;
+                        }
+                        break;
                     case "accounts":
                         {
                             //show string[] in gui accounts to talk to
@@ -174,9 +180,26 @@ namespace Eindopdracht_csharp
                 Thread.Sleep(1000);
             }
         }
-        private static void RefreshChat()
+        private static void RefreshChat(string[][] messages)
         {
-            
+            ChatUsersScreen.chatScreens.ForEach(screen =>
+            {
+                if (screen.chatName == messages[0][0])
+                {
+                    screen.Update(messages);
+                }
+            });
+        }
+
+        public static void AddMessage(string[] message)
+        {
+            ChatUsersScreen.chatScreens.ForEach(screen =>
+            {
+                if (screen.chatName == messages[0])
+                {
+                    screen.AddMessage(messages[0], message[1], message[2]);
+                }
+            });
         }
 
 
