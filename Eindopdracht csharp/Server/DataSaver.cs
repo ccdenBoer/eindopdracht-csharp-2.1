@@ -6,54 +6,54 @@ using System.Net.Sockets;
 using System.Text.Json;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Text.RegularExpressions;
+using System.Diagnostics;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Server.DataSaving
 {
     internal class DataSaver
     {
 
-        public static void AddNewClient(ClientHandler client)
+        public static void AddNewClient(string client)
         {
-            Console.WriteLine("huh");
-            Console.WriteLine(Environment.CurrentDirectory);
-            string directoryPath = Environment.CurrentDirectory + "\\Clients\\" + client.Username;
-            Directory.CreateDirectory(directoryPath);
-            string path = Environment.CurrentDirectory + "\\Clients\\" + client.Username + "\\" + client.Username + ".JSON";
-            File.Create(path).Close();
-
-            string clientAsJson = JsonConvert.SerializeObject(client);
-            File.WriteAllText(path, clientAsJson);
+            Directory.CreateDirectory(Path.Combine(Environment.CurrentDirectory, "Clients", client));
         }
 
         public static bool ClientExists(string username)
         {
-            string[] clientFiles = Directory.GetFiles(Environment.CurrentDirectory + "\\Clients");
-            foreach (string clientPath in clientFiles)
-            {
-                var clientInJson = JObject.Parse(File.ReadAllText(clientPath));
-                ClientHandler client = new ClientHandler();
-                client.Username = clientInJson["patientId"].ToString();
-                if(client.Username == username)
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return Directory.Exists(Path.Combine(Environment.CurrentDirectory, "Clients", username));
         }
 
-        //public static void addpatientfile(tcpclient client, list<jobject> sessiondata)
-        //{
-        //    jobject jobject = jobject.parse(client.readjsonmessage(client));
-        //    string patientid = jobject["data"]["patientid"].tostring();
+        public static string[] GetMessageFile(string client, string otherClient)
+        {
+            string pathClient = Path.Combine(Environment.CurrentDirectory, "Clients", client, otherClient);
+            string pathOtherClient = Path.Combine(Environment.CurrentDirectory, "Clients", otherClient, client);
 
-        //    int amountoffiles = directory.getfiles(environment.currentdirectory + "\\clients\\" + patientid).length;
-            
-        //    string path = environment.currentdirectory + "\\clients\\" + patientid + "\\" + patientid + " session#" + amountoffiles +
-        //                  ".json";
-        //    file.create(path).close();
+            if (!File.Exists(pathClient))
+            {
+                File.Create(pathClient).Close();
+                File.Create(pathOtherClient).Close();
+            }
+            return File.ReadAllLines(pathClient);
 
-        //    file.writealltext(path, sessiondata.tostring());
-        //}
+        }
+        public static void WriteMessageFile(string client, string otherClient, string message)
+        {
+            Console.WriteLine(client + " - " + otherClient+ " - " + message);
+            string pathClient = Path.Combine(Environment.CurrentDirectory, "Clients", client, otherClient);
+            string pathOtherClient = Path.Combine(Environment.CurrentDirectory, "Clients", otherClient, client);
+            File.AppendAllText(pathClient, client + ": " + message +Environment.NewLine);
+            File.AppendAllText(pathOtherClient, client + ": " + message + Environment.NewLine);
+        }
+
+        public static string[] GetAccounts(string client)
+        {
+            var accounts = new List<string>();
+            foreach (string clientDirectory in Directory.GetDirectories(Path.Combine(Environment.CurrentDirectory, "Clients")))
+                if (clientDirectory != Path.Combine(Environment.CurrentDirectory, "Clients", client))
+                accounts.Add(Path.GetFileName(clientDirectory));
+            return accounts.ToArray();       
+        }
     }
 }

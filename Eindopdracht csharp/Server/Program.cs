@@ -13,10 +13,10 @@ namespace Server
 
         static void Main(string[] args)
         {
-            DataSaver.AddNewClient(new ClientHandler()
-            {
-                Username = "Coen"
-            });
+            //DataSaver.AddNewClient(new ClientHandler()
+            //{
+            //    Username = "Momin"
+            //});
             Console.WriteLine("Server started");
             _listener = new TcpListener(IPAddress.Any, 15243);
             _listener.Start();

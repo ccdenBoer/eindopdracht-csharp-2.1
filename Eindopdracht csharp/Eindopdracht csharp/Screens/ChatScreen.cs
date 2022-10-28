@@ -1,4 +1,6 @@
 ﻿using Microsoft.VisualBasic;
+using Newtonsoft.Json;
+using Server.Commands;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,10 +16,12 @@ namespace Eindopdracht_csharp
     public partial class ChatScreen : Form
     {
         public string chatName { get; set; }
+        private string[] messages;
         public ChatScreen()
         {
             InitializeComponent();
             this.txtChatInput.KeyPress += new System.Windows.Forms.KeyPressEventHandler(CheckEnterKeyPress);
+            Update();
         }
 
         private void txtChatInput_TextChanged(object sender, EventArgs e)
@@ -45,12 +49,36 @@ namespace Eindopdracht_csharp
         //currently only local, space the text out so that it fits on the chatbox
         private void CheckEnterKeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
         {
+
             if (e.KeyChar == (char)Keys.Return && txtChatInput.Text.Length > 0)
+            {
+               
+               
+                
+                Command sendMessageCommand = new Command() {
+                    id = "send",
+                    data = new Tuple<string, string>(chatName, txtChatInput.Text)
+                };
+                Console.WriteLine(txtChatInput.Text);
+                Client.SendData(JsonConvert.SerializeObject(sendMessageCommand));
+                
+                //reset the chat input
+                txtChatInput.Text = "";
+            }
+        }
+
+        public void btnBack_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+        public void Update()
+        {
+            messages = Client.messages;
+            lstChatView.ResetText();
+            foreach (string message in messages)
             {
                 //put the time above the message, can later also have the sender
                 lstChatView.Items.Insert(0, new ListViewItem(DateAndTime.Now.TimeOfDay.ToString().Substring(0, 8) + " - You"));
-
-                
 
                 //get all the words from the input
                 string[] words = txtChatInput.Text.Split(" ");
@@ -110,14 +138,7 @@ namespace Eindopdracht_csharp
                 }
                 //add an empty line for clarity
                 lstChatView.Items.Insert(lineNr, new ListViewItem());
-                //reset the chat input
-                txtChatInput.Text = "";
             }
-        }
-
-        private void btnBack_Click(object sender, EventArgs e)
-        {
-            this.Close();
         }
     }
 }
