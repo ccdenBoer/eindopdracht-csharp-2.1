@@ -9,20 +9,16 @@ namespace Server
 
     {
         private static TcpListener _listener;
-        private static List<ClientHandler> _clients = new List<ClientHandler>();
+        public static List<ClientHandler> _clients = new List<ClientHandler>();
 
         static void Main(string[] args)
         {
-            //DataSaver.AddNewClient(new ClientHandler()
-            //{
-            //    Username = "Momin"
-            //});
             Console.WriteLine("Server started");
             _listener = new TcpListener(IPAddress.Any, 15243);
             _listener.Start();
             _listener.BeginAcceptTcpClient(new AsyncCallback(OnConnect), null);
 
-            for (; ; ) ;
+            for (; ; );
         }
 
         private static void OnConnect(IAsyncResult ar)
@@ -40,6 +36,7 @@ namespace Server
             _clients.Remove(client);
             Console.WriteLine("Client disconnected");
         }
+
     }
 
 

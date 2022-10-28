@@ -156,11 +156,11 @@ namespace Server
                     case "send":
                         {
                             //Console.WriteLine((string)message.data.Item1 + " - " + (string)message.data.Item2);
-                            DataSaver.WriteMessageFile(this.username, (string)message.data.Item1, (string)message.data.Item2);
+                            DataSaver.WriteMessageFile(this.username, (string)message.data.Item1, (string)message.data.Item2, (string)message.data.Item3);
                             foreach (ClientHandler clientHandler in Program._clients)
                             {
                                 if (clientHandler.username == (string)message.data.Item1)
-                                    clientHandler.AddMessage(message.data.Item2, tcpClient);
+                                    clientHandler.AddMessage(message.data.Item2, (string)message.data.Item3, tcpClient);
                             }
                             break;
                         }
@@ -194,7 +194,7 @@ namespace Server
             }
         }
 
-        private void AddMessage(string message, TcpClient tcpClient)
+        private void AddMessage(string message, string time, TcpClient tcpClient)
         {
             Command addMessageCommand = new Command()
             {
