@@ -130,7 +130,10 @@ namespace Server
                         }
                     case "send":
                         {
-                            DataSaver.WriteMessageFile(this.Username, message.otherClient, message);
+                            dynamic dataMessage = JsonConvert.SerializeObject(message.data);
+                            dynamic otherClient = dataMessage.otherClient;
+                            dynamic msg = dataMessage.message;
+                            DataSaver.WriteMessageFile(this.Username, (string)otherClient, msg);
                             break;
                         }
                     case "accounts":

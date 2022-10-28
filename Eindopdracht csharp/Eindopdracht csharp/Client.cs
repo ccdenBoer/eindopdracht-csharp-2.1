@@ -30,10 +30,12 @@ namespace Eindopdracht_csharp
         private static bool resultIsValid = false;
         private static bool accountsIsValid;
         private static string[] accounts;
+        public static string otherClient = "";
+        public static string[] messages = {""};
+
         private NetworkStream stream;
         private byte[] buffer = new byte[1024];
         private string totalBuffer = "";
-        private string talkingTo { get; set; }
 
         private static bool IsRunning { get; set; } = false;
         public Client(string ip, int port)
@@ -41,7 +43,6 @@ namespace Eindopdracht_csharp
             address = IPAddress.Parse(ip);
             this.port = port;
             tcpClient = new TcpClient(ip, port);
-            this.talkingTo = "";
 
 
             //JObject loginRequest = JObject.Parse(ReadJsonMessage(tcpClient));
@@ -136,7 +137,7 @@ namespace Eindopdracht_csharp
                     case "update":
                         {
                             //show string[] in gui messages
-                            string[] messages = (string[])data;
+                            messages = data.ToObject<string[]>();
                             break;
                         }
                     case "accounts":
@@ -157,17 +158,27 @@ namespace Eindopdracht_csharp
             }
         }
         //Refresh messages
-        private void Update(object? obj)
+        private void Update()
         {
             while(true)
             {
-                if (talkingTo != null)
+                if (otherClient != "")
                 {
-                    SendCommand("update", talkingTo);
+                    Command updateCommand = new Command() {
+                        id = "update",
+                        data = otherClient
+                    };
+
                 }
                 Thread.Sleep(1000);
             }
         }
+        private static void RefreshChat()
+        {
+
+        }
+
+
         public static string ReadJsonMessage(TcpClient client)
         {
             var stream = new StreamReader(client.GetStream(), Encoding.ASCII);

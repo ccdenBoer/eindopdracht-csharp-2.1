@@ -45,6 +45,7 @@ namespace Eindopdracht_csharp
             {
                 ChatScreen chatScreen = new ChatScreen();
                 chatScreen.SetChatName(lstChatView.SelectedItems[0].Text);
+                Client.otherClient = lstChatView.SelectedItems[0].Text;
                 chatScreen.Show();
             }
         }
