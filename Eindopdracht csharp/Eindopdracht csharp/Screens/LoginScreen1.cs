@@ -25,14 +25,14 @@ namespace Eindopdracht_csharp
 
         private void txtxPasswordInput_TextChanged(object sender, EventArgs e)
         {
-
+            txtxPasswordInput.Text = String.Concat(txtxPasswordInput.Text.Where(c => !Char.IsWhiteSpace(c)));
         }
 
         private void btnLogin1_Click(object sender, EventArgs e)
         {
             if (txtNameInput.Text.Length > 0 && txtPassword.Text.Length > 0)
             {
-                Client.SendCommand("login", txtNameInput.Text);
+                Client.SendCommand("login", String.Concat(txtNameInput.Text.Where(c => !Char.IsWhiteSpace(c))));
             }
             else
             {
@@ -69,8 +69,8 @@ namespace Eindopdracht_csharp
 
         private void txtNameInput_TextChanged(object sender, EventArgs e)
         {
-
-        }
+            txtNameInput.Text = String.Concat(txtNameInput.Text.Where(c => !Char.IsWhiteSpace(c)));
+        } 
 
 
 
