@@ -108,36 +108,46 @@ namespace Eindopdracht_csharp
                     //server checks if login info already exists
                     case "login":
                         {
-                            resultIsValid = true;
+/*                            resultIsValid = true;
                             if ((bool)data == true)
                             {
                                 //show gui login successful
                                 result = true;
-                            } else
+                            }
+                            else
                             {
                                 //show gui login failed 
-                                result=false;
-                            }
+                                result = false;
+                            }*/
                             Console.WriteLine("message " + data);
-                            //LoginScreen1.LoginCheck((bool)message.data);
+                            Program.loginScreen.AuthenticateLogin((bool?)data);
+
                             break;
                         }
                     case "register":
                         {
-                            resultIsValid = true;
+/*                            resultIsValid = true;
                             if ((bool)data == false)
                             {
                                 //show gui register successful
                             } else
                             {
                                 //show gui register failed
-                            }
+                            }*/
+                            Program.loginScreen.CreateAccountResponse(data);
+
                             break;
                         }
                     case "update":
                         {
                             //show string[] in gui messages
-                            messages = data.ToObject<string[]>();
+                            //messages = data.ToObject<string[]>();
+                            Task.Run(async() => await RefreshChat(data.ToObject<string[][]>()));
+                            break;
+                        }
+                    case "addMessage":
+                        {
+                            Task.Run(async () => await AddMessage(data.ToObject < string[]>()));
                             break;
                         }
                     case "accounts":
@@ -173,9 +183,36 @@ namespace Eindopdracht_csharp
                 Thread.Sleep(1000);
             }
         }
-        private static void RefreshChat()
+        private static void RefreshChat(string[][] messages)
         {
+            ChatUsersScreen.chatScreens.ForEach(async screen =>
+            {
+                if (screen.chatName == messages[0][0])
+                {
+                    if (!screen.IsDisposed)
+                    {
+                        await Task.Run(() =>
+                        {
+                            screen.Update(messages);
+                        });
+                    }
+                    
+                }
+            });
+        }
 
+        public static void AddMessage(string[] message)
+        {
+            ChatUsersScreen.chatScreens.ForEach(async screen =>
+            {
+                if (!screen.IsDisposed && screen.chatName == messages[0])
+                {
+                    await Task.Run(() =>
+                    {
+                        screen.AddMessage(messages[0], message[1], message[2]);
+                    }); 
+                }
+            });
         }
 
 
@@ -224,7 +261,7 @@ namespace Eindopdracht_csharp
         //"send" send username of person it wants to chat to and the message it sent Tuple<[string], [string]>
 
        
-        public static bool SendCommand(string id, dynamic data)
+        public static void SendCommand(string id, dynamic data)
         {
             Command command = new Command
             {
@@ -232,17 +269,12 @@ namespace Eindopdracht_csharp
                 data = data
             };
             SendData(JsonConvert.SerializeObject(command));
-
-            while(!resultIsValid)
-            {
-                Thread.Sleep(25);
-            }
-            resultIsValid = false;
-            return (bool)result;
         }
         public static string[] GetAccounts()
         {
             Console.WriteLine("trying to get account");
+            SendCommand("accounts", null);
+
             while (!accountsIsValid)
             {
                 Thread.Sleep(25);

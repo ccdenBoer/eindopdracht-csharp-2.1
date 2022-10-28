@@ -33,6 +33,8 @@
             this.txtHeader = new System.Windows.Forms.TextBox();
             this.btnChatSelect = new System.Windows.Forms.Button();
             this.btnLogOut = new System.Windows.Forms.Button();
+            this.txtSearchInput = new System.Windows.Forms.TextBox();
+            this.btnRefresh = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // UsersCollomn
@@ -48,11 +50,11 @@
             this.lstChatView.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.lstChatView.FullRowSelect = true;
             this.lstChatView.GridLines = true;
-            this.lstChatView.Location = new System.Drawing.Point(17, 67);
-            this.lstChatView.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.lstChatView.Location = new System.Drawing.Point(12, 75);
             this.lstChatView.Name = "lstChatView";
-            this.lstChatView.Size = new System.Drawing.Size(320, 500);
-            this.lstChatView.TabIndex = 2;
+            this.lstChatView.Size = new System.Drawing.Size(224, 265);
+            this.lstChatView.Sorting = System.Windows.Forms.SortOrder.Ascending;
+            this.lstChatView.TabIndex = 4;
             this.lstChatView.TileSize = new System.Drawing.Size(1, 1);
             this.lstChatView.UseCompatibleStateImageBehavior = false;
             this.lstChatView.View = System.Windows.Forms.View.Details;
@@ -62,48 +64,66 @@
             // 
             this.txtHeader.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtHeader.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.txtHeader.Location = new System.Drawing.Point(17, 20);
-            this.txtHeader.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtHeader.Location = new System.Drawing.Point(12, 12);
             this.txtHeader.Name = "txtHeader";
             this.txtHeader.ReadOnly = true;
-            this.txtHeader.Size = new System.Drawing.Size(286, 32);
-            this.txtHeader.TabIndex = 11;
+            this.txtHeader.Size = new System.Drawing.Size(200, 22);
+            this.txtHeader.TabIndex = 3;
             this.txtHeader.Text = "Select someone to chat with!";
             this.txtHeader.TextChanged += new System.EventHandler(this.txtName_TextChanged);
             // 
             // btnChatSelect
             // 
             this.btnChatSelect.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.btnChatSelect.Location = new System.Drawing.Point(17, 577);
-            this.btnChatSelect.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.btnChatSelect.Location = new System.Drawing.Point(12, 346);
             this.btnChatSelect.Name = "btnChatSelect";
-            this.btnChatSelect.Size = new System.Drawing.Size(320, 83);
-            this.btnChatSelect.TabIndex = 12;
+            this.btnChatSelect.Size = new System.Drawing.Size(224, 50);
+            this.btnChatSelect.TabIndex = 1;
             this.btnChatSelect.Text = "Chat!";
             this.btnChatSelect.UseVisualStyleBackColor = true;
             this.btnChatSelect.Click += new System.EventHandler(this.btnChatSelect_Click);
             // 
             // btnLogOut
             // 
-            this.btnLogOut.Location = new System.Drawing.Point(17, 692);
-            this.btnLogOut.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.btnLogOut.Location = new System.Drawing.Point(12, 415);
             this.btnLogOut.Name = "btnLogOut";
-            this.btnLogOut.Size = new System.Drawing.Size(107, 38);
-            this.btnLogOut.TabIndex = 13;
+            this.btnLogOut.Size = new System.Drawing.Size(75, 23);
+            this.btnLogOut.TabIndex = 2;
             this.btnLogOut.Text = "Log Out";
             this.btnLogOut.UseVisualStyleBackColor = true;
             this.btnLogOut.Click += new System.EventHandler(this.btnLogOut_Click);
             // 
+            // txtSearchInput
+            // 
+            this.txtSearchInput.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.txtSearchInput.Location = new System.Drawing.Point(12, 40);
+            this.txtSearchInput.Name = "txtSearchInput";
+            this.txtSearchInput.PlaceholderText = "Search Users";
+            this.txtSearchInput.Size = new System.Drawing.Size(224, 29);
+            this.txtSearchInput.TabIndex = 0;
+            this.txtSearchInput.TextChanged += new System.EventHandler(this.txtSearchInput_TextChanged);
+            // 
+            // btnRefresh
+            // 
+            this.btnRefresh.Location = new System.Drawing.Point(156, 415);
+            this.btnRefresh.Name = "btnRefresh";
+            this.btnRefresh.Size = new System.Drawing.Size(88, 23);
+            this.btnRefresh.TabIndex = 5;
+            this.btnRefresh.Text = "Refresh Users";
+            this.btnRefresh.UseVisualStyleBackColor = true;
+            this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
+            // 
             // ChatUsersScreen
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(366, 750);
+            this.ClientSize = new System.Drawing.Size(256, 450);
+            this.Controls.Add(this.btnRefresh);
+            this.Controls.Add(this.txtSearchInput);
             this.Controls.Add(this.btnLogOut);
             this.Controls.Add(this.btnChatSelect);
             this.Controls.Add(this.txtHeader);
             this.Controls.Add(this.lstChatView);
-            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "ChatUsersScreen";
             this.Text = "ChatUsersScreen";
             this.Load += new System.EventHandler(this.ChatUsersScreen_Load);
@@ -119,5 +139,7 @@
         private TextBox txtHeader;
         private Button btnChatSelect;
         private Button btnLogOut;
+        private TextBox txtSearchInput;
+        private Button btnRefresh;
     }
 }

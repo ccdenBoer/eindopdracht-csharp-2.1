@@ -16,12 +16,12 @@ namespace Eindopdracht_csharp
     public partial class ChatScreen : Form
     {
         public string chatName { get; set; }
-        private string[] messages;
+        private int totalMessages = 0;
         public ChatScreen()
         {
             InitializeComponent();
             this.txtChatInput.KeyPress += new System.Windows.Forms.KeyPressEventHandler(CheckEnterKeyPress);
-            Update();
+            RequestMessages();
         }
 
         private void txtChatInput_TextChanged(object sender, EventArgs e)
@@ -52,15 +52,14 @@ namespace Eindopdracht_csharp
 
             if (e.KeyChar == (char)Keys.Return && txtChatInput.Text.Length > 0)
             {
-               
-               
-                
                 Command sendMessageCommand = new Command() {
                     id = "send",
-                    data = new Tuple<string, string>(chatName, txtChatInput.Text)
+                    data = new Tuple<string, string, string>(chatName, DateTime.Now.ToString(), txtChatInput.Text)
                 };
                 Console.WriteLine(txtChatInput.Text);
                 Client.SendData(JsonConvert.SerializeObject(sendMessageCommand));
+
+                AddMessage("You", DateTime.Now.ToString(), txtChatInput.Text);
                 
                 //reset the chat input
                 txtChatInput.Text = "";
@@ -71,14 +70,35 @@ namespace Eindopdracht_csharp
         {
             this.Close();
         }
-        public void Update()
+        public void Update(string[][] messages)
         {
-            messages = Client.messages;
-            lstChatView.ResetText();
-            foreach (string message in messages)
+            Invoke(new Action(() => btnLoadMore.Enabled = true));
+            //lstChatView.ResetText();
+            foreach (string[] message in messages)
             {
+                if (message[2] == null)
+                {
+                    continue;
+                }
+                else if(message[0] == chatName)
+                {
+                    AddMessage(message[0], message[1], message[2]);
+                }
+                else
+                {
+                    AddMessage("You", message[1], message[2]);
+                }
+            }
+        }
+
+        public void AddMessage(string sender, string time, string message)
+        {
+            Invoke(new Action(() =>
+            {
+                totalMessages++;
+            
                 //put the time above the message, can later also have the sender
-                lstChatView.Items.Insert(0, new ListViewItem(DateAndTime.Now.TimeOfDay.ToString().Substring(0, 8) + " - You"));
+                lstChatView.Items.Insert(0, new ListViewItem(time + " - " + sender));
 
                 //get all the words from the input
                 string[] words = txtChatInput.Text.Split(" ");
@@ -100,7 +120,7 @@ namespace Eindopdracht_csharp
 
                         //print out the long word bit by bit
                         string longWord = words[i];
-
+                            
                         while (longWord.Length > 24)
                         {
                             lstChatView.Items.Insert(lineNr, new ListViewItem(longWord.Substring(0, 22) + "-"));
@@ -114,8 +134,8 @@ namespace Eindopdracht_csharp
                     {
                         //add a word to the line
                         line += " " + words[i];
-
-                        //check if there is a next word
+                            
+                        //check if there is a next word 
                         if (words.Length > i + 1)
                         {
                             //check if the next word will fit on the line
@@ -133,12 +153,31 @@ namespace Eindopdracht_csharp
                             lstChatView.Items.Insert(lineNr, new ListViewItem(line.Substring(1, line.Length - 1)));
                             line = "";
                             lineNr++;
-                        }
+                        }   
                     }
                 }
                 //add an empty line for clarity
                 lstChatView.Items.Insert(lineNr, new ListViewItem());
-            }
+            }));
+        }
+
+        private void btnLoadMore_Click(object sender, EventArgs e)
+        {
+            btnLoadMore.Enabled = false;
+            RequestMessages();
+        }
+
+        private void RequestMessages()
+        {
+            Command sendMessageCommand = new Command()
+            {
+                id = "requestMessages",
+                data = new Tuple<string, int>(chatName, totalMessages)
+            };
+            Console.WriteLine($"Requesting more messages for {chatName}, has {totalMessages} messages");
+            Client.SendData(JsonConvert.SerializeObject(sendMessageCommand));
         }
     }
+    
 }
+

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.VisualBasic.Logging;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -24,26 +25,41 @@ namespace Eindopdracht_csharp
 
         private void txtxPasswordInput_TextChanged(object sender, EventArgs e)
         {
-
+            txtxPasswordInput.Text = String.Concat(txtxPasswordInput.Text.Where(c => !Char.IsWhiteSpace(c)));
         }
 
         private void btnLogin1_Click(object sender, EventArgs e)
         {
             if (txtNameInput.Text.Length > 0 && txtPassword.Text.Length > 0)
             {
-                if(Client.SendCommand("login", txtNameInput.Text))
-                {
-                    Program.StartChatUserScreen();
-                } else
-                {
-                    txtFeedback.Text = "Username or Password is incorrect";
-                }
+                Client.SendCommand("login", String.Concat(txtNameInput.Text.Where(c => !Char.IsWhiteSpace(c))));
             }
             else
             {
                 txtFeedback.Text = "Username or Password not filled in";
             }
             
+        }
+        public void AuthenticateLogin(bool? authentication)
+        {
+            Invoke(new Action(() =>
+            {
+                if (authentication != null)
+                {
+                    if ((bool)authentication)
+                    {
+                        Program.StartChatUserScreen();
+                    }
+                    else
+                    {
+                        txtFeedback.Text = "Username or Password is incorrect";
+                    }
+                }   
+                else
+                {
+                    txtFeedback.Text = "Error while connecting to server";
+                }
+            }));
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
@@ -53,26 +69,50 @@ namespace Eindopdracht_csharp
 
         private void txtNameInput_TextChanged(object sender, EventArgs e)
         {
+            txtNameInput.Text = String.Concat(txtNameInput.Text.Where(c => !Char.IsWhiteSpace(c)));
+        } 
 
-        }
+
+
+       
 
         private void btnCreate_Click(object sender, EventArgs e)
         {
             if (txtNameInput.Text.Length > 0 && txtPassword.Text.Length > 0)
             {
-                if (Client.SendCommand("register", txtNameInput.Text))
-                {
-                    Program.StartChatUserScreen();
-                }
-                else
-                {
-                    txtFeedback.Text = "Account already exists";
-                }
+                Client.SendCommand("register", txtNameInput.Text);
+
+
             }
             else
             {
                 txtFeedback.Text = "Username or Password not filled in";
             }
+        }
+
+        public void CreateAccountResponse(bool? authentication)
+        {
+            Invoke(new Action(() =>
+            {
+
+            
+                if (authentication != null)
+                {
+                    if ((bool)authentication)
+                    {
+                        Program.StartChatUserScreen();
+                    }
+                    else
+                    {
+                        txtFeedback.Text = "Account already exists";
+                    }
+                }
+                else
+                {
+                    txtFeedback.Text = "Error connecting to server";
+                }
+            }));
+
         }
     }
 }
