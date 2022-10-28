@@ -52,9 +52,6 @@ namespace Eindopdracht_csharp
 
             if (e.KeyChar == (char)Keys.Return && txtChatInput.Text.Length > 0)
             {
-               
-               
-                
                 Command sendMessageCommand = new Command() {
                     id = "send",
                     data = new Tuple<string, string>(chatName, txtChatInput.Text)

@@ -138,6 +138,7 @@ namespace Eindopdracht_csharp
                         {
                             //show string[] in gui messages
                             messages = data.ToObject<string[]>();
+                            RefreshChat();
                             break;
                         }
                     case "accounts":
@@ -175,7 +176,7 @@ namespace Eindopdracht_csharp
         }
         private static void RefreshChat()
         {
-
+            
         }
 
 

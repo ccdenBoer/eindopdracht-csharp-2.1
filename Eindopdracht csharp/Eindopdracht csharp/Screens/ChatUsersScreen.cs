@@ -12,6 +12,7 @@ namespace Eindopdracht_csharp
 {
     public partial class ChatUsersScreen : Form
     {
+        public static List<ChatScreen> chatScreens = new List<ChatScreen>();
         public ChatUsersScreen()
         {
             InitializeComponent();
@@ -41,12 +42,39 @@ namespace Eindopdracht_csharp
 
         private void btnChatSelect_Click(object sender, EventArgs e)
         {
-            if (lstChatView.SelectedItems != null && lstChatView.SelectedItems.Count == 1)
+            if (lstChatView.SelectedItems != null && lstChatView.SelectedItems.Count > 0)
             {
-                ChatScreen chatScreen = new ChatScreen();
-                chatScreen.SetChatName(lstChatView.SelectedItems[0].Text);
-                Client.otherClient = lstChatView.SelectedItems[0].Text;
-                chatScreen.Show();
+                for (int i = 0; i < lstChatView.SelectedItems.Count; i++)
+                {
+                    bool alreadyOpen = false;
+                    for (int j = 0; j < chatScreens.Count; j++)
+                    {
+                        if (lstChatView.SelectedItems[i].Text == chatScreens[j].chatName)
+                        {
+                            if (chatScreens[j].IsDisposed)
+                            {
+                                chatScreens.RemoveAt(j);
+                            }
+                            else
+                            {
+                                alreadyOpen = true;
+                            }
+                            
+                            
+                        }
+                    }
+
+                    if (!alreadyOpen)
+                    {
+                        ChatScreen chatScreen = new ChatScreen();
+                        chatScreen.SetChatName(lstChatView.SelectedItems[i].Text);
+                        Client.otherClient = lstChatView.SelectedItems[i].Text;
+                        chatScreen.Show();
+                        chatScreens.Add(chatScreen);
+                    }
+                    
+                }
+                
             }
         }
 
