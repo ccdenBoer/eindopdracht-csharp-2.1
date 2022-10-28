@@ -120,9 +120,9 @@ namespace Server
                         }
                     case "update":
                         {
-                            string[] data;
-                            string[] a = DataSaver.GetMessageFile(this.username, message.otherClient);
-                            int messagesLeft = a.Length - (int)message.data.Item2;
+                            string[][] data;
+                            string[][] a = DataSaver.GetMessageFile(this.username, message.otherClient);
+                            int messagesLeft = a.Length - (int)message.data.Item2-1;
                             
                             if(messagesLeft <= 0)
                             {
@@ -199,7 +199,7 @@ namespace Server
             Command addMessageCommand = new Command()
             {
                 id = "addMessage",
-                data = message
+                data = new string[] { username, time, message }
             };
             SendData(JsonConvert.SerializeObject(addMessageCommand), tcpClient);
         }
