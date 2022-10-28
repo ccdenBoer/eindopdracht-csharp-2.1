@@ -14,7 +14,7 @@ namespace Server
     internal class ClientHandler
     {
         private TcpClient tcpClient;
-        public string Username { get; set; }
+        private string username;
 
 
         public ClientHandler(TcpClient tcpClient)
@@ -69,13 +69,12 @@ namespace Server
                                     data = DataSaver.GetAccounts(username)
 
                                 };
+                                this.username = (string)message.data;
                                 SendData(JsonConvert.SerializeObject(accountsCommand), tcpClient);
                             }
                             else
                             {
                                 status = false;
-
-                                this.Username = message.data;
 
                             }
                             Command loginCommand = new Command()
@@ -99,11 +98,12 @@ namespace Server
                             else
                             {
                                 status = true;
+                                this.username = (string)message.data;
                                 DataSaver.AddNewClient((string)message.data);
                                 Command accountsCommand = new Command()
                                 {
                                     id = "accounts",
-                                    data = DataSaver.GetAccounts(Username)
+                                    data = DataSaver.GetAccounts(username)
 
                                 };
                                 SendData(JsonConvert.SerializeObject(accountsCommand), tcpClient);
@@ -122,7 +122,7 @@ namespace Server
                             Command updateCommand = new Command()
                             {
                                 id = "update",
-                                data = DataSaver.GetMessageFile(this.Username, message.otherClient)
+                                data = DataSaver.GetMessageFile(this.username, message.otherClient)
 
                             };
                             SendData(JsonConvert.SerializeObject(updateCommand), tcpClient);
@@ -130,10 +130,8 @@ namespace Server
                         }
                     case "send":
                         {
-                            dynamic dataMessage = JsonConvert.SerializeObject(message.data);
-                            dynamic otherClient = dataMessage.otherClient;
-                            dynamic msg = dataMessage.message;
-                            DataSaver.WriteMessageFile(this.Username, (string)otherClient, msg);
+                            Console.WriteLine((string)message.data.Item1 + " - " + (string)message.data.Item2);
+                            DataSaver.WriteMessageFile(this.username, (string)message.data.Item1, (string)message.data.Item2);
                             break;
                         }
                     case "accounts":
@@ -141,7 +139,7 @@ namespace Server
                             Command updateCommand = new Command()
                             {
                                 id = "accounts",
-                                data = DataSaver.GetAccounts(Username)
+                                data = DataSaver.GetAccounts(username)
 
                             };
                             SendData(JsonConvert.SerializeObject(updateCommand), tcpClient);

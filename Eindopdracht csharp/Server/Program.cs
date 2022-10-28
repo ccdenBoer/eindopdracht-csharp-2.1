@@ -17,18 +17,6 @@ namespace Server
             //{
             //    Username = "Momin"
             //});
-            ClientHandler momin = new ClientHandler()
-            {
-                Username = "momin"
-            };
-            ClientHandler coen = new ClientHandler()
-            {
-                Username = "coen"
-            };
-            //create account
-            DataSaver.AddNewClient(momin.Username);
-            DataSaver.AddNewClient(coen.Username);
-
             Console.WriteLine("Server started");
             _listener = new TcpListener(IPAddress.Any, 15243);
             _listener.Start();

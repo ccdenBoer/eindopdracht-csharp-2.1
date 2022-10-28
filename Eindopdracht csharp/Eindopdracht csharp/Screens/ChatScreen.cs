@@ -53,18 +53,17 @@ namespace Eindopdracht_csharp
             if (e.KeyChar == (char)Keys.Return && txtChatInput.Text.Length > 0)
             {
                
-                //reset the chat input
-                txtChatInput.Text = "";
-                DataCommand dataCommand = new DataCommand()
-                {
-                    otherClient = chatName,
-                    message = txtChatInput.Text,
-                };
+               
+                
                 Command sendMessageCommand = new Command() {
                     id = "send",
-                    data = JsonConvert.SerializeObject(dataCommand)
+                    data = new Tuple<string, string>(chatName, txtChatInput.Text)
                 };
+                Console.WriteLine(txtChatInput.Text);
                 Client.SendData(JsonConvert.SerializeObject(sendMessageCommand));
+                
+                //reset the chat input
+                txtChatInput.Text = "";
             }
         }
 

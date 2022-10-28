@@ -40,6 +40,7 @@ namespace Server.DataSaving
         }
         public static void WriteMessageFile(string client, string otherClient, string message)
         {
+            Console.WriteLine(client + " - " + otherClient+ " - " + message);
             string pathClient = Path.Combine(Environment.CurrentDirectory, "Clients", client, otherClient);
             string pathOtherClient = Path.Combine(Environment.CurrentDirectory, "Clients", otherClient, client);
             File.AppendAllText(pathClient, client + ": " + message +Environment.NewLine);
