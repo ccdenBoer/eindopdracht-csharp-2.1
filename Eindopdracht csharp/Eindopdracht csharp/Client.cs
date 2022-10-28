@@ -108,30 +108,34 @@ namespace Eindopdracht_csharp
                     //server checks if login info already exists
                     case "login":
                         {
-                            resultIsValid = true;
+/*                            resultIsValid = true;
                             if ((bool)data == true)
                             {
                                 //show gui login successful
                                 result = true;
-                            } else
+                            }
+                            else
                             {
                                 //show gui login failed 
-                                result=false;
-                            }
+                                result = false;
+                            }*/
                             Console.WriteLine("message " + data);
-                            //LoginScreen1.LoginCheck((bool)message.data);
+                            Program.loginScreen.Login((bool?)data);
+
                             break;
                         }
                     case "register":
                         {
-                            resultIsValid = true;
+/*                            resultIsValid = true;
                             if ((bool)data == false)
                             {
                                 //show gui register successful
                             } else
                             {
                                 //show gui register failed
-                            }
+                            }*/
+                            Program.loginScreen.CreateAccountResponse(data);
+
                             break;
                         }
                     case "update":
@@ -248,7 +252,7 @@ namespace Eindopdracht_csharp
         //"send" send username of person it wants to chat to and the message it sent Tuple<[string], [string]>
 
        
-        public static bool? SendCommand(string id, dynamic data)
+        public static void SendCommand(string id, dynamic data)
         {
             Command command = new Command
             {
@@ -256,13 +260,6 @@ namespace Eindopdracht_csharp
                 data = data
             };
             SendData(JsonConvert.SerializeObject(command));
-
-            while(!resultIsValid)
-            {
-                Thread.Sleep(25);
-            }
-            resultIsValid = false;
-            return (bool?)result;
         }
         public static string[] GetAccounts()
         {

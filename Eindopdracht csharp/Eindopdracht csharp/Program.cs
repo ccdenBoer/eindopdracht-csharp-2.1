@@ -7,7 +7,7 @@ namespace Eindopdracht_csharp
 {
     internal static class Program
     {
-        private static LoginScreen1 loginScreen;
+        public static LoginScreen1 loginScreen;
 
         private static ChatUsersScreen chatUsersScreen;
 

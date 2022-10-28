@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.VisualBasic.Logging;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -31,10 +32,21 @@ namespace Eindopdracht_csharp
         {
             if (txtNameInput.Text.Length > 0 && txtPassword.Text.Length > 0)
             {
-                bool? login = Client.SendCommand("login", txtNameInput.Text);
-                if (login != null)
+                Client.SendCommand("login", txtNameInput.Text);
+            }
+            else
+            {
+                txtFeedback.Text = "Username or Password not filled in";
+            }
+            
+        }
+        public void Login(bool? authentication)
+        {
+            Invoke(new Action(() =>
+            {
+                if (authentication != null)
                 {
-                    if ((bool)login)
+                    if ((bool)authentication)
                     {
                         Program.StartChatUserScreen();
                     }
@@ -42,18 +54,12 @@ namespace Eindopdracht_csharp
                     {
                         txtFeedback.Text = "Username or Password is incorrect";
                     }
-                }
+                }   
                 else
                 {
                     txtFeedback.Text = "Error while connecting to server";
                 }
-
-            }
-            else
-            {
-                txtFeedback.Text = "Username or Password not filled in";
-            }
-            
+            }));
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
@@ -66,14 +72,33 @@ namespace Eindopdracht_csharp
 
         }
 
+
+
+       
+
         private void btnCreate_Click(object sender, EventArgs e)
         {
             if (txtNameInput.Text.Length > 0 && txtPassword.Text.Length > 0)
             {
-                bool? response = Client.SendCommand("register", txtNameInput.Text);
-                if (response != null)
+                Client.SendCommand("register", txtNameInput.Text);
+
+
+            }
+            else
+            {
+                txtFeedback.Text = "Username or Password not filled in";
+            }
+        }
+
+        public void CreateAccountResponse(bool? authentication)
+        {
+            Invoke(new Action(() =>
+            {
+
+            
+                if (authentication != null)
                 {
-                    if ((bool)response)
+                    if ((bool)authentication)
                     {
                         Program.StartChatUserScreen();
                     }
@@ -86,12 +111,8 @@ namespace Eindopdracht_csharp
                 {
                     txtFeedback.Text = "Error connecting to server";
                 }
+            }));
 
-            }
-            else
-            {
-                txtFeedback.Text = "Username or Password not filled in";
-            }
         }
     }
 }

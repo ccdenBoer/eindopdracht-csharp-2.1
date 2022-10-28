@@ -9,7 +9,7 @@ namespace Server
 
     {
         private static TcpListener _listener;
-        private static List<ClientHandler> _clients = new List<ClientHandler>();
+        public static List<ClientHandler> _clients = new List<ClientHandler>();
 
         static void Main(string[] args)
         {
