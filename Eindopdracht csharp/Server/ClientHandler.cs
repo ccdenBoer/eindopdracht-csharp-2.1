@@ -20,6 +20,7 @@ namespace Server
         public ClientHandler(TcpClient tcpClient)
         {
             this.tcpClient = tcpClient;
+            this.username = "";
             Thread thread = new Thread(HandleClient);
             thread.Start();
         }
@@ -131,7 +132,12 @@ namespace Server
                     case "send":
                         {
                             Console.WriteLine((string)message.data.Item1 + " - " + (string)message.data.Item2);
-                            DataSaver.WriteMessageFile(this.username, (string)message.data.Item1, (string)message.data.Item2);
+                            //DataSaver.WriteMessageFile(this.username, (string)message.data.Item1, (string)message.data.Item2);
+                            foreach (ClientHandler clientHandler in Program._clients)
+                            {
+                                if (clientHandler.username == (string)message.data.Item1)
+                                    ClientHandler.AddMessage(message.data.Item2, tcpClient);
+                            }
                             break;
                         }
                     case "accounts":
@@ -162,6 +168,16 @@ namespace Server
                 stream.Flush();
                 Console.WriteLine("sent!");
             }
+        }
+
+        private static void AddMessage(string message, TcpClient tcpClient)
+        {
+            Command addMessageCommand = new Command()
+            {
+                id = "addMessage",
+                data = message
+            };
+            SendData(JsonConvert.SerializeObject(addMessageCommand), tcpClient);
         }
 
         public static string ReadJsonMessage(TcpClient client)
