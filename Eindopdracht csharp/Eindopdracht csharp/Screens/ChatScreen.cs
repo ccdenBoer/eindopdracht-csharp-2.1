@@ -17,10 +17,11 @@ namespace Eindopdracht_csharp
     {
         public string chatName { get; set; }
         private int totalMessages = 0;
-        public ChatScreen()
+        public ChatScreen(string chatName)
         {
             InitializeComponent();
             this.txtChatInput.KeyPress += new System.Windows.Forms.KeyPressEventHandler(CheckEnterKeyPress);
+            SetChatName(chatName);
             RequestMessages();
         }
 
@@ -32,7 +33,7 @@ namespace Eindopdracht_csharp
         public void SetChatName(string name)
         {
             this.chatName = name;
-            this.Text = chatName;
+            //this.Text = chatName;
             this.lstChatView.Columns[0].Text = "Chatting with: " + chatName;
         }
 
@@ -68,7 +69,7 @@ namespace Eindopdracht_csharp
 
         public void btnBack_Click(object sender, EventArgs e)
         {
-            this.Close();
+            this.Dispose();
         }
         public void Update(string[][] messages)
         {
@@ -76,7 +77,7 @@ namespace Eindopdracht_csharp
             //lstChatView.ResetText();
             foreach (string[] message in messages)
             {
-                if (message[2] == null)
+                if (message[2] == "")
                 {
                     continue;
                 }
@@ -101,7 +102,7 @@ namespace Eindopdracht_csharp
                 lstChatView.Items.Insert(0, new ListViewItem(time + " - " + sender));
 
                 //get all the words from the input
-                string[] words = txtChatInput.Text.Split(" ");
+                string[] words = message.Split(" ");
                 string line = "";
 
                 int lineNr = 1;
@@ -169,12 +170,13 @@ namespace Eindopdracht_csharp
 
         private void RequestMessages()
         {
+            Console.WriteLine($"Requesting more messages for {this.chatName}, has {totalMessages} messages");
             Command sendMessageCommand = new Command()
             {
                 id = "requestMessages",
-                data = new Tuple<string, int>(chatName, totalMessages)
+                data = new Tuple<string, int>(this.chatName, totalMessages)
             };
-            Console.WriteLine($"Requesting more messages for {chatName}, has {totalMessages} messages");
+            Console.WriteLine($"Requesting more messages for {this.chatName}, has {totalMessages} messages");
             Client.SendData(JsonConvert.SerializeObject(sendMessageCommand));
         }
     }

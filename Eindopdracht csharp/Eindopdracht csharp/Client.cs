@@ -30,7 +30,6 @@ namespace Eindopdracht_csharp
         private static bool resultIsValid = false;
         private static bool accountsIsValid;
         private static string[] accounts;
-        public static string otherClient = "";
         public static string[] messages = {""};
 
         private NetworkStream stream;
@@ -142,12 +141,15 @@ namespace Eindopdracht_csharp
                         {
                             //show string[] in gui messages
                             //messages = data.ToObject<string[]>();
-                            Task.Run(async() => await RefreshChat(data.ToObject<string[][]>()));
+                            Console.WriteLine("haha");
+                            //Task.Run(async() => await RefreshChat(data.ToObject<string[][]>()));
+                            RefreshChat(data.ToObject<string[][]>());
                             break;
                         }
                     case "addMessage":
                         {
-                            Task.Run(async () => await AddMessage(data.ToObject < string[]>()));
+                            //Task.Run(async () => await AddMessage(data.ToObject < string[]>()));
+                            AddMessage(data.ToObject<string[]>());
                             break;
                         }
                     case "accounts":
@@ -167,26 +169,13 @@ namespace Eindopdracht_csharp
                 }
             }
         }
-        //Refresh messages
-        private void Update()
-        {
-            while(true)
-            {
-                if (otherClient != "")
-                {
-                    Command updateCommand = new Command() {
-                        id = "update",
-                        data = otherClient
-                    };
 
-                }
-                Thread.Sleep(1000);
-            }
-        }
         private static void RefreshChat(string[][] messages)
         {
+            Console.WriteLine("adding chat history");
             ChatUsersScreen.chatScreens.ForEach(async screen =>
             {
+                Console.WriteLine(screen.chatName +" "+ messages[0][0]);
                 if (screen.chatName == messages[0][0])
                 {
                     if (!screen.IsDisposed)
@@ -203,13 +192,17 @@ namespace Eindopdracht_csharp
 
         public static void AddMessage(string[] message)
         {
+            Console.WriteLine("adding message");
             ChatUsersScreen.chatScreens.ForEach(async screen =>
             {
-                if (!screen.IsDisposed && screen.chatName == messages[0])
+                Console.WriteLine("going through screens " + message[0] + " " + screen.chatName);
+                if (!screen.IsDisposed && screen.chatName == message[0])
                 {
+                    Console.WriteLine("Adding to screen");
                     await Task.Run(() =>
                     {
-                        screen.AddMessage(messages[0], message[1], message[2]);
+                        Console.WriteLine("adding message to screen");
+                        screen.AddMessage(message[0], message[1], message[2]);
                     }); 
                 }
             });

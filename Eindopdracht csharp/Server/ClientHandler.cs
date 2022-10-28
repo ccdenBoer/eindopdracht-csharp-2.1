@@ -118,10 +118,11 @@ namespace Server
                             SendData(JsonConvert.SerializeObject(registerCommand), tcpClient);
                             break;
                         }
-                    case "update":
+                    case "requestMessages":
                         {
                             string[][] data;
-                            string[][] a = DataSaver.GetMessageFile(this.username, message.otherClient);
+                            string[][] a = DataSaver.GetMessageFile(this.username, (string)message.data.Item1);
+                            Array.Reverse(a);
                             int messagesLeft = a.Length - (int)message.data.Item2-1;
                             
                             if(messagesLeft <= 0)
@@ -143,7 +144,7 @@ namespace Server
                             {
                                 data = a[(int)message.data.Item2..messagesLeft];
                             }
-
+                            Array.Reverse(data);
                             Command updateCommand = new Command()
                             {
                                 id = "update",
@@ -160,7 +161,7 @@ namespace Server
                             foreach (ClientHandler clientHandler in Program._clients)
                             {
                                 if (clientHandler.username == (string)message.data.Item1)
-                                    clientHandler.AddMessage(message.data.Item2, (string)message.data.Item3, tcpClient);
+                                    clientHandler.AddMessage(username, (string)message.data.Item2, (string)message.data.Item3, clientHandler.tcpClient);
                             }
                             break;
                         }
@@ -194,12 +195,12 @@ namespace Server
             }
         }
 
-        private void AddMessage(string message, string time, TcpClient tcpClient)
+        private void AddMessage(string name, string time, string message, TcpClient tcpClient)
         {
             Command addMessageCommand = new Command()
             {
                 id = "addMessage",
-                data = new string[] { username, time, message }
+                data = new string[] { name, time, message }
             };
             SendData(JsonConvert.SerializeObject(addMessageCommand), tcpClient);
         }
