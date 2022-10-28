@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.VisualBasic;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Server.Commands;
 using Server.DataSaving;
@@ -15,7 +16,6 @@ namespace Server
     {
         private TcpClient tcpClient;
         private string username;
-
 
         public ClientHandler(TcpClient tcpClient)
         {
@@ -120,10 +120,34 @@ namespace Server
                         }
                     case "update":
                         {
+                            string[][] data;
+                            string[][] a = DataSaver.GetMessageFile(this.username, message.otherClient);
+                            int messagesLeft = a.Length - (int)message.data.Item2-1;
+                            
+                            if(messagesLeft <= 0)
+                            {
+                                data = a;
+                            } else if((int)message.data.Item2 == 0)
+                            {
+                                if(messagesLeft >= 20)
+                                {
+                                    data = a[(int)message.data.Item2..((int)message.data.Item2+20)];
+                                } else
+                                {
+                                    data = a[(int)message.data.Item2..messagesLeft];
+                                }
+                            } else if(messagesLeft >= 10)
+                            {
+                                data = a[(int)message.data.Item2..((int)message.data.Item2 + 20)];
+                            } else
+                            {
+                                data = a[(int)message.data.Item2..messagesLeft];
+                            }
+
                             Command updateCommand = new Command()
                             {
                                 id = "update",
-                                data = DataSaver.GetMessageFile(this.username, message.otherClient)
+                                data = data
 
                             };
                             SendData(JsonConvert.SerializeObject(updateCommand), tcpClient);
@@ -132,11 +156,11 @@ namespace Server
                     case "send":
                         {
                             //Console.WriteLine((string)message.data.Item1 + " - " + (string)message.data.Item2);
-                            DataSaver.WriteMessageFile(this.username, (string)message.data.Item1, (string)message.data.Item2);
+                            DataSaver.WriteMessageFile(this.username, (string)message.data.Item1, (string)message.data.Item2, (string)message.data.Item3);
                             foreach (ClientHandler clientHandler in Program._clients)
                             {
                                 if (clientHandler.username == (string)message.data.Item1)
-                                    ClientHandler.AddMessage(message.data.Item2, tcpClient);
+                                    clientHandler.AddMessage(message.data.Item2, (string)message.data.Item3, tcpClient);
                             }
                             break;
                         }
@@ -170,12 +194,12 @@ namespace Server
             }
         }
 
-        private static void AddMessage(string message, TcpClient tcpClient)
+        private void AddMessage(string message, string time, TcpClient tcpClient)
         {
             Command addMessageCommand = new Command()
             {
                 id = "addMessage",
-                data = message
+                data = new string[] { username, time, message }
             };
             SendData(JsonConvert.SerializeObject(addMessageCommand), tcpClient);
         }
