@@ -94,7 +94,7 @@ namespace Server
                             string[][] data;
                             string[][] allData = DataSaver.GetMessageFile(this.username, (string)message.data.Item1);
                             Array.Reverse(allData);
-                            int messagesLeft = allData.Length - (int)message.data.Item2-2;
+                            int messagesLeft = allData.Length - (int)message.data.Item2-1;
                             Console.WriteLine(messagesLeft);
                             Console.WriteLine((int)message.data.Item2);
                             Console.WriteLine(allData.Length);
