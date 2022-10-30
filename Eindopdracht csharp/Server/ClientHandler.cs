@@ -30,7 +30,7 @@ namespace Server
             this.tcpClient = null;
         }
 
-        public void HandleClient()
+        public async void HandleClient()
         {
             while (true)
             {
@@ -59,18 +59,16 @@ namespace Server
                         {
                             bool status;
 
-                            string username = message.data;
-                            if (DataSaver.ClientExists(username))
-
+                            if (DataSaver.LoginExists((string)message.data.Item1, (string)message.data.Item2))
                             {
                                 status = true;
+                                this.username = (string)message.data.Item1;
                                 Command accountsCommand = new Command()
                                 {
                                     id = "accounts",
                                     data = DataSaver.GetAccounts(username)
 
                                 };
-                                this.username = (string)message.data;
                                 SendData(JsonConvert.SerializeObject(accountsCommand), tcpClient);
                             }
                             else
@@ -92,15 +90,16 @@ namespace Server
                         {
                             bool status;
 
-                            if (DataSaver.ClientExists((string)message.data))
+                            if (DataSaver.ClientExists((string)message.data.Item1))
                             {
                                 status = false;
                             }
                             else
                             {
                                 status = true;
-                                this.username = (string)message.data;
-                                DataSaver.AddNewClient((string)message.data);
+                                this.username = (string)message.data.Item1;
+                                Task task = DataSaver.AddNewClient((string)message.data.Item1, (string)message.data.Item2);
+
                                 Command accountsCommand = new Command()
                                 {
                                     id = "accounts",
@@ -108,6 +107,8 @@ namespace Server
 
                                 };
                                 SendData(JsonConvert.SerializeObject(accountsCommand), tcpClient);
+
+                                await task;
                             }
                             Command registerCommand = new Command()
                             {
@@ -123,7 +124,7 @@ namespace Server
                             string[][] data;
                             string[][] a = DataSaver.GetMessageFile(this.username, (string)message.data.Item1);
                             Array.Reverse(a);
-                            int messagesLeft = a.Length - (int)message.data.Item2-1;
+                            int messagesLeft = a.Length - (int)message.data.Item2-2;
                             Console.WriteLine(messagesLeft);
                             Console.WriteLine((int)message.data.Item2);
                             Console.WriteLine(a.Length);
@@ -131,7 +132,7 @@ namespace Server
                             if(messagesLeft <= 0)
                             {
                                 Console.WriteLine("none");
-                                a = null;
+                                data = null;
                             } else if((int)message.data.Item2 == 0)
                             {
                                 Console.WriteLine("0 messages");
@@ -151,14 +152,19 @@ namespace Server
                             } else
                             {
                                 Console.WriteLine("last messages");
-                                data = a[(int)message.data.Item2..messagesLeft];
+                                Console.WriteLine((int)message.data.Item2..messagesLeft);
+                                data = a[(int)message.data.Item2..(messagesLeft+ (int)message.data.Item2)];
                             }
                             List<string[]> b = new List<string[]>();
                             b.Add(new string[] { (string)message.data.Item1, "", "" });
-                            if (a != null)
+                            Console.WriteLine(b[0]);
+                            if (data != null)
                             {
-                                foreach (string[] line in a)
+                                foreach (string[] line in data)
+                                {
                                     b.Add(line);
+                                    Console.WriteLine(line[2]);
+                                }
                             }
                             
                             //Array.Reverse(data);
@@ -168,18 +174,20 @@ namespace Server
                                 data = b
 
                             };
+                            Console.WriteLine("send "+ b.Count +" messages");
                             SendData(JsonConvert.SerializeObject(updateCommand), tcpClient);
                             break;
                         }
                     case "send":
                         {
                             //Console.WriteLine((string)message.data.Item1 + " - " + (string)message.data.Item2);
-                            DataSaver.WriteMessageFile(this.username, (string)message.data.Item1, (string)message.data.Item2, (string)message.data.Item3);
+                            Task task = DataSaver.WriteMessageFile(this.username, (string)message.data.Item1, (string)message.data.Item2, (string)message.data.Item3);
                             foreach (ClientHandler clientHandler in Program._clients)
                             {
                                 if (clientHandler.username == (string)message.data.Item1)
                                     clientHandler.AddMessage(username, (string)message.data.Item2, (string)message.data.Item3, clientHandler.tcpClient);
                             }
+                            await task;
                             break;
                         }
                     case "accounts":

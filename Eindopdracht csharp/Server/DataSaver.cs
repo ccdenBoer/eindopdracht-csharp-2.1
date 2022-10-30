@@ -15,9 +15,10 @@ namespace Server.DataSaving
     public class DataSaver
     {
 
-        public static void AddNewClient(string client)
+        public static async Task AddNewClient(string client, string password)
         {
             Directory.CreateDirectory(Path.Combine(Environment.CurrentDirectory, "Clients", client));
+            Directory.CreateDirectory(Path.Combine(Environment.CurrentDirectory, "Clients", client, password));
         }
 
         public static string GetDirectory()
@@ -28,6 +29,11 @@ namespace Server.DataSaving
         public static bool ClientExists(string username)
         {
             return Directory.Exists(Path.Combine(Environment.CurrentDirectory, "Clients", username));
+        }
+
+        public static bool LoginExists(string username, string password)
+        {
+            return Directory.Exists(Path.Combine(Environment.CurrentDirectory, "Clients", username, password));
         }
 
         public static string[][] GetMessageFile(string client, string otherClient)
@@ -43,13 +49,14 @@ namespace Server.DataSaving
 
             List<string[]> a  = new List<string[]>();
             a.Add(new string[] {otherClient, "", "" });
-            foreach (string line in File.ReadAllLines(pathClient))
+            foreach (string line in  File.ReadAllLines(pathClient))
                 a.Add(line.Split("‎"));
 
             return a.ToArray();
         }
-        public static void WriteMessageFile(string client, string otherClient, string time, string message)
+        public static async Task WriteMessageFile(string client, string otherClient, string time, string message)
         {
+            Console.WriteLine(client + " - " + otherClient+ " - " + message);
             string pathClient = Path.Combine(Environment.CurrentDirectory, "Clients", client, otherClient);
             string pathOtherClient = Path.Combine(Environment.CurrentDirectory, "Clients", otherClient, client);
             if (!File.Exists(pathClient))
@@ -80,6 +87,7 @@ namespace Server.DataSaving
 
         public static string[] GetAccounts(string client)
         {
+            Console.WriteLine("client = " + client);
             var accounts = new List<string>();
             foreach (string clientDirectory in Directory.GetDirectories(Path.Combine(Environment.CurrentDirectory, "Clients")))
                 if (clientDirectory != Path.Combine(Environment.CurrentDirectory, "Clients", client))
