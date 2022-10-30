@@ -55,7 +55,7 @@ namespace Eindopdracht_csharp
             {
                 Command sendMessageCommand = new Command() {
                     id = "send",
-                    data = new Tuple<string, string, string>(chatName, DateTime.Now.ToString(), txtChatInput.Text)
+                    data = new Tuple<string, string, string>(chatName, DateTime.Now.ToString(), String.Concat(txtChatInput.Text.Where(c => !(c == '‎'))))
                 };
                 Console.WriteLine(txtChatInput.Text);
                 Client.SendData(JsonConvert.SerializeObject(sendMessageCommand));
