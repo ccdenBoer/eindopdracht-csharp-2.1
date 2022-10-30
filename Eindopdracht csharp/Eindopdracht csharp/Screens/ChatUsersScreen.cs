@@ -12,19 +12,20 @@ namespace Eindopdracht_csharp
 {
     public partial class ChatUsersScreen : Form
     {
-        private List<string> availableUsers;
+        public static List<ChatScreen> chatScreens = new List<ChatScreen>();
+        private string[] accounts;
         public ChatUsersScreen()
         {
             InitializeComponent();
+            this.txtSearchInput.KeyPress += new System.Windows.Forms.KeyPressEventHandler(CheckEnterKeyPress);
 
-            availableUsers = new List<string>();
-
-            lstChatView.Items.Add("1");
-            lstChatView.Items.Add("2");
-            lstChatView.Items.Add("3");
-            lstChatView.Items.Add("4");
-            lstChatView.Items.Add("5");
-            lstChatView.Items.Add("6");
+            accounts = Client.GetAccounts();
+            foreach (string account in accounts)
+            {
+                Console.WriteLine(account);
+                lstChatView.Items.Add(account);
+            }
+    
         }
 
         private void ChatUsersScreen_Load(object sender, EventArgs e)
@@ -39,22 +40,88 @@ namespace Eindopdracht_csharp
 
         private void btnLogOut_Click(object sender, EventArgs e)
         {
+            chatScreens.ForEach(screen => screen.Close());
+            chatScreens = new List<ChatScreen>();
             Program.LogOut();
         }
 
         private void btnChatSelect_Click(object sender, EventArgs e)
         {
-            if (lstChatView.SelectedItems != null && lstChatView.SelectedItems.Count == 1)
+            if (lstChatView.SelectedItems != null && lstChatView.SelectedItems.Count > 0)
             {
-                ChatScreen chatScreen = new ChatScreen();
-                chatScreen.SetChatName(lstChatView.SelectedItems[0].Text);
-                chatScreen.Show();
+                for (int i = 0; i < lstChatView.SelectedItems.Count; i++)
+                {
+                    bool alreadyOpen = false;
+                    for (int j = 0; j < chatScreens.Count; j++)
+                    {
+                        if (lstChatView.SelectedItems[i].Text == chatScreens[j].chatName)
+                        {
+                            if (chatScreens[j].IsDisposed)
+                            {
+                                chatScreens.RemoveAt(j);
+                            }
+                            else
+                            {
+                                alreadyOpen = true;
+                            }
+                            
+                            
+                        }
+                    }
+
+                    if (!alreadyOpen)
+                    {
+                        ChatScreen chatScreen = new ChatScreen(lstChatView.SelectedItems[i].Text);
+                        chatScreen.Show();
+                        chatScreens.Add(chatScreen);
+                    }
+                    
+                }
+                
+            }
+        }
+
+        private void CheckEnterKeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
+        {
+
+            if (e.KeyChar == (char)Keys.Return)
+            {
+                //ListView.ListViewItemCollection items = lstChatView.Items;
+
+                //ColumnHeader header = lstChatView.Columns[0];
+                SearchAccountsList(txtSearchInput.Text);
+
+            }
+        }
+
+        private void SearchAccountsList(string searchInput)
+        {
+            lstChatView.Items.Clear();
+
+            for (int i = 0; i < accounts.Count(); i++)
+            {
+                Console.WriteLine("searching");
+                if (accounts[i].ToLower().Contains(searchInput.ToLower()))
+                {
+                    lstChatView.Items.Add(accounts[i]);
+                }
             }
         }
 
         private void lstChatView_SelectedIndexChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void txtSearchInput_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnRefresh_Click(object sender, EventArgs e)
+        {
+            accounts = Client.GetAccounts();
+            SearchAccountsList("");
         }
     }
 }

@@ -26,11 +26,15 @@ namespace Eindopdracht_csharp
         private IPAddress address;
 
         private static TcpClient tcpClient;
-        private static bool result;
+        private static dynamic result;
+        private static bool resultIsValid = false;
+        private static bool accountsIsValid;
+        private static string[] accounts;
+        public static string[] messages = {""};
+
         private NetworkStream stream;
         private byte[] buffer = new byte[1024];
         private string totalBuffer = "";
-        private string talkingTo { get; set; }
 
         private static bool IsRunning { get; set; } = false;
         public Client(string ip, int port)
@@ -38,7 +42,6 @@ namespace Eindopdracht_csharp
             address = IPAddress.Parse(ip);
             this.port = port;
             tcpClient = new TcpClient(ip, port);
-            this.talkingTo = null;
 
 
             //JObject loginRequest = JObject.Parse(ReadJsonMessage(tcpClient));
@@ -70,7 +73,7 @@ namespace Eindopdracht_csharp
 
             try
             {
-                new Thread(Update).Start();
+                //new Thread(Update).Start();
                 IsRunning = true;
             }
             catch (Exception ex)
@@ -84,84 +87,134 @@ namespace Eindopdracht_csharp
         {
             while (true)
             {
-                Console.WriteLine("awaiting message");
-                dynamic message = JsonConvert.DeserializeObject(ReadJsonMessage(tcpClient));
-                string id = "";
-                dynamic data = "";
-                Console.WriteLine("received " + message);
-
                 try
                 {
-                    id = message.id;
-                    data = message.data;
-                }
-                catch
-                {
-                    Console.WriteLine("can't find id in message:" + message);
-                }
-                switch (id)
-                {
-                    //server checks if login info already exists
-                    case "login":
-                        {
-                            if ((bool)data == true)
-                            {
-                                //show gui login successful
-                                result = true;
-                            } else
-                            {
-                                //show gui login failed 
-                                result=false;
-                            }
-                            Console.WriteLine("message " + data);
-                            //LoginScreen1.LoginCheck((bool)message.data);
-                            break;
-                        }
-                    case "register":
-                        {
-                            if((bool)data == false)
-                            {
-                                //show gui register successful
-                            } else
-                            {
-                                //show gui register failed
-                            }
-                            break;
-                        }
-                    case "update":
-                        {
-                            //show string[] in gui messages
-                            string[] messages = (string[])data;
-                            break;
-                        }
-                    case "accounts":
-                        {
-                            //show string[] in gui accounts to talk to
-                            string[] accounts = (string[])data;
-                            break;
-                        }
+                    Console.WriteLine("awaiting message");
+                    dynamic message = JsonConvert.DeserializeObject(ReadJsonMessage(tcpClient));
+                    string id = "";
+                    dynamic data = "";
+                    Console.WriteLine("received " + message);
 
-                    //error
-                    default:
-                        {
-                            Console.WriteLine("received unknown message:\n" + message);
-                            break;
-                        }
+                    try
+                    {
+                        id = message.id;
+                        data = message.data;
+                    }
+                    catch
+                    {
+                        Console.WriteLine("can't find id in message:" + message);
+                    }
+                    switch (id)
+                    {
+                        //server checks if login info already exists
+                        case "login":
+                            {
+                                /*                            resultIsValid = true;
+                                                            if ((bool)data == true)
+                                                            {
+                                                                //show gui login successful
+                                                                result = true;
+                                                            }
+                                                            else
+                                                            {
+                                                                //show gui login failed 
+                                                                result = false;
+                                                            }*/
+                                Console.WriteLine("message " + data);
+                                Program.loginScreen.AuthenticateLogin((bool?)data);
+
+                                break;
+                            }
+                        case "register":
+                            {
+                                /*                            resultIsValid = true;
+                                                            if ((bool)data == false)
+                                                            {
+                                                                //show gui register successful
+                                                            } else
+                                                            {
+                                                                //show gui register failed
+                                                            }*/
+                                Program.loginScreen.CreateAccountResponse(data);
+
+                                break;
+                            }
+                        case "update":
+                            {
+                                //show string[] in gui messages
+                                //messages = data.ToObject<string[]>();
+                                Console.WriteLine("haha");
+                                //Task.Run(async() => await RefreshChat(data.ToObject<string[][]>()));
+                                RefreshChat(data.ToObject<string[][]>());
+                                break;
+                            }
+                        case "addMessage":
+                            {
+                                //Task.Run(async () => await AddMessage(data.ToObject < string[]>()));
+                                AddMessage(data.ToObject<string[]>());
+                                break;
+                            }
+                        case "accounts":
+                            {
+                                //show string[] in gui accounts to talk to
+                                accounts = data.ToObject<string[]>();
+                                accountsIsValid = true;
+                                break;
+                            }
+
+                        //error
+                        default:
+                            {
+                                Console.WriteLine("received unknown message:\n" + message);
+                                break;
+                            }
+                    }
                 }
-            }
-        }
-        //Refresh messages
-        private void Update(object? obj)
-        {
-            while(true)
-            {
-                if (talkingTo != null)
+                catch(Exception e)
                 {
-                    SendCommand("update", talkingTo);
+                    Console.WriteLine(e);
                 }
-                Thread.Sleep(1000);
             }
         }
+
+        private static void RefreshChat(string[][] messages)
+        {
+            Console.WriteLine("adding chat history");
+            for(int i = 0; i < ChatUsersScreen.chatScreens.Count; i++)
+            {
+                Console.WriteLine(ChatUsersScreen.chatScreens[i].chatName +" "+ messages[0][0]);
+                if (ChatUsersScreen.chatScreens[i].chatName == messages[0][0])
+                {
+                    if (!ChatUsersScreen.chatScreens[i].IsDisposed)
+                    {
+
+                        ChatUsersScreen.chatScreens[i].Update(messages);
+
+                    }
+                    
+                }
+            }
+        }
+
+        public static void AddMessage(string[] message)
+        {
+            Console.WriteLine("adding message");
+            ChatUsersScreen.chatScreens.ForEach(async screen =>
+            {
+                Console.WriteLine("going through screens " + message[0] + " " + screen.chatName);
+                if (!screen.IsDisposed && screen.chatName == message[0])
+                {
+                    Console.WriteLine("Adding to screen");
+                    await Task.Run(() =>
+                    {
+                        Console.WriteLine("adding message to screen");
+                        screen.AddMessage(message[0], message[1], message[2], true);
+                    }); 
+                }
+            });
+        }
+
+
         public static string ReadJsonMessage(TcpClient client)
         {
             var stream = new StreamReader(client.GetStream(), Encoding.ASCII);
@@ -207,7 +260,7 @@ namespace Eindopdracht_csharp
         //"send" send username of person it wants to chat to and the message it sent Tuple<[string], [string]>
 
        
-        public static bool SendCommand(string id, dynamic data)
+        public static void SendCommand(string id, dynamic data)
         {
             Command command = new Command
             {
@@ -215,10 +268,19 @@ namespace Eindopdracht_csharp
                 data = data
             };
             SendData(JsonConvert.SerializeObject(command));
-            Thread.Sleep(1000);
-
-            return result;
         }
+        public static string[] GetAccounts()
+        {
+            Console.WriteLine("trying to get account");
+            SendCommand("accounts", null);
 
+            while (!accountsIsValid)
+            {
+                Thread.Sleep(25);
+            }
+            Console.WriteLine("got accounts");
+            accountsIsValid = false;
+            return accounts;
+        }
     }
 }

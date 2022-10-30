@@ -15,9 +15,10 @@ namespace Server.DataSaving
     internal class DataSaver
     {
 
-        public static void AddNewClient(string client)
+        public static async Task AddNewClient(string client, string password)
         {
             Directory.CreateDirectory(Path.Combine(Environment.CurrentDirectory, "Clients", client));
+            Directory.CreateDirectory(Path.Combine(Environment.CurrentDirectory, "Clients", client, password));
         }
 
         public static bool ClientExists(string username)
@@ -25,7 +26,12 @@ namespace Server.DataSaving
             return Directory.Exists(Path.Combine(Environment.CurrentDirectory, "Clients", username));
         }
 
-        public static string[] GetMessageFile(string client, string otherClient)
+        public static bool LoginExists(string username, string password)
+        {
+            return Directory.Exists(Path.Combine(Environment.CurrentDirectory, "Clients", username, password));
+        }
+
+        public static string[][] GetMessageFile(string client, string otherClient)
         {
             string pathClient = Path.Combine(Environment.CurrentDirectory, "Clients", client, otherClient);
             string pathOtherClient = Path.Combine(Environment.CurrentDirectory, "Clients", otherClient, client);
@@ -35,21 +41,34 @@ namespace Server.DataSaving
                 File.Create(pathClient).Close();
                 File.Create(pathOtherClient).Close();
             }
-            return File.ReadAllLines(pathClient);
 
+            List<string[]> a  = new List<string[]>();
+            a.Add(new string[] {otherClient, "", "" });
+            foreach (string line in  File.ReadAllLines(pathClient))
+                a.Add(line.Split("‎"));
+
+            return a.ToArray();
         }
-        public static void WriteMessageFile(string client, string otherClient, string message)
+        public static async Task WriteMessageFile(string client, string otherClient, string time, string message)
         {
+            Console.WriteLine(client + " - " + otherClient+ " - " + message);
             string pathClient = Path.Combine(Environment.CurrentDirectory, "Clients", client, otherClient);
             string pathOtherClient = Path.Combine(Environment.CurrentDirectory, "Clients", otherClient, client);
-            File.AppendAllText(pathClient, client + ": " + message +Environment.NewLine);
-            File.AppendAllText(pathOtherClient, client + ": " + message + Environment.NewLine);
+            if (File.ReadAllLines(pathClient).Length == 0)
+            {
+                File.AppendAllText(pathClient, client + "‎" + time + "‎" + message);
+                File.AppendAllText(otherClient, client + "‎" + time + "‎" + message);
+            }
+            File.AppendAllText(pathClient, Environment.NewLine +client + "‎" + time + "‎" + message);
+            File.AppendAllText(pathOtherClient, Environment.NewLine + client + "‎" + time + "‎" + message);
         }
 
-        public static string[] GetAccounts()
+        public static string[] GetAccounts(string client)
         {
+            Console.WriteLine("client = " + client);
             var accounts = new List<string>();
             foreach (string clientDirectory in Directory.GetDirectories(Path.Combine(Environment.CurrentDirectory, "Clients")))
+                if (clientDirectory != Path.Combine(Environment.CurrentDirectory, "Clients", client))
                 accounts.Add(Path.GetFileName(clientDirectory));
             return accounts.ToArray();       
         }

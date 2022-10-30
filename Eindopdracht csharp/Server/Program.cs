@@ -9,57 +9,16 @@ namespace Server
 
     {
         private static TcpListener _listener;
-        private static List<ClientHandler> _clients = new List<ClientHandler>();
+        public static List<ClientHandler> _clients = new List<ClientHandler>();
 
         static void Main(string[] args)
         {
-            //DataSaver.AddNewClient(new ClientHandler()
-            //{
-            //    Username = "Momin"
-            //});
-            ClientHandler momin = new ClientHandler()
-            {
-                Username = "momin"
-            };
-            ClientHandler coen = new ClientHandler()
-            {
-                Username = "coen"
-            };
-            //create account
-            DataSaver.AddNewClient(momin.Username);
-            DataSaver.AddNewClient(coen.Username);
-
-            Console.WriteLine(DataSaver.ClientExists("momin"));
-            Console.WriteLine(DataSaver.ClientExists("mo"));
-
-            Console.WriteLine(string.Join("\n", DataSaver.GetAccounts()));
-            //open chat
-            Console.WriteLine(string.Join("\n", DataSaver.GetMessageFile("momin", "coen")) + "\n");
-            //write message
-            DataSaver.WriteMessageFile("momin", "coen", "ey");
-            //refresh 
-            Console.WriteLine(string.Join("\n", DataSaver.GetMessageFile("momin", "coen")) + "\n");
-            //write message
-            DataSaver.WriteMessageFile("momin", "momin", "yo");
-            //refresh 
-            Console.WriteLine(string.Join("\n", DataSaver.GetMessageFile("momin", "coen")) + "\n");
-            //write message
-            DataSaver.WriteMessageFile("momin", "coen", "wow je reageert");
-            //refresh 
-            Console.WriteLine(string.Join("\n", DataSaver.GetMessageFile("momin", "coen")) + "\n");
-
-            Console.WriteLine(string.Join("\n", DataSaver.GetAccounts()) + "\n");
-
-
-            Console.WriteLine(DataSaver.ClientExists("test"));
-
-
             Console.WriteLine("Server started");
             _listener = new TcpListener(IPAddress.Any, 15243);
             _listener.Start();
             _listener.BeginAcceptTcpClient(new AsyncCallback(OnConnect), null);
 
-            for (; ; ) ;
+            for (; ; );
         }
 
         private static void OnConnect(IAsyncResult ar)
@@ -77,6 +36,7 @@ namespace Server
             _clients.Remove(client);
             Console.WriteLine("Client disconnected");
         }
+
     }
 
 
