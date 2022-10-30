@@ -63,25 +63,14 @@ namespace Server
                             {
                                 status = true;
                                 this.username = (string)message.data.Item1;
-                                Command accountsCommand = new Command()
-                                {
-                                    id = "accounts",
-                                    data = DataSaver.GetAccounts(username)
-
-                                };
-                                SendData(JsonConvert.SerializeObject(accountsCommand), tcpClient);
+                                SendData("accounts", DataSaver.GetAccounts(username), tcpClient);
                             }
                             else
                             {
                                 status = false;
 
                             }
-                            Command loginCommand = new Command()
-                            {
-                                id = "login",
-                                data = status
-                            };
-                            SendData(JsonConvert.SerializeObject(loginCommand), tcpClient);
+                            SendData("login", status, tcpClient);
                             break;
                         }
 
@@ -99,24 +88,10 @@ namespace Server
                                 status = true;
                                 this.username = (string)message.data.Item1;
                                 Task task = DataSaver.AddNewClient((string)message.data.Item1, (string)message.data.Item2);
-
-                                Command accountsCommand = new Command()
-                                {
-                                    id = "accounts",
-                                    data = DataSaver.GetAccounts(username)
-
-                                };
-                                SendData(JsonConvert.SerializeObject(accountsCommand), tcpClient);
-
+                                SendData("accounts", DataSaver.GetAccounts(username), tcpClient);
                                 await task;
                             }
-                            Command registerCommand = new Command()
-                            {
-                                id = "login",
-                                data = status
-
-                            };
-                            SendData(JsonConvert.SerializeObject(registerCommand), tcpClient);
+                            SendData("login", status, tcpClient);
                             break;
                         }
                     case "requestMessages":
@@ -168,14 +143,8 @@ namespace Server
                             }
                             
                             //Array.Reverse(data);
-                            Command updateCommand = new Command()
-                            {
-                                id = "update",
-                                data = b
-
-                            };
                             Console.WriteLine("send "+ b.Count +" messages");
-                            SendData(JsonConvert.SerializeObject(updateCommand), tcpClient);
+                            SendData("update", b, tcpClient);
                             break;
                         }
                     case "send":
@@ -192,13 +161,7 @@ namespace Server
                         }
                     case "accounts":
                         {
-                            Command updateCommand = new Command()
-                            {
-                                id = "accounts",
-                                data = DataSaver.GetAccounts(username)
-
-                            };
-                            SendData(JsonConvert.SerializeObject(updateCommand), tcpClient);
+                            SendData("accounts", DataSaver.GetAccounts(username), tcpClient);
                             break;
                         }
 
@@ -210,11 +173,17 @@ namespace Server
             }
         }
 
-        private static void SendData(string ob, TcpClient tcpClient)
+        private static void SendData(string id, dynamic data, TcpClient tcpClient)
         {
+            Command command = new Command()
+            {
+                id = id,
+                data = data
+
+            };
             var stream = new StreamWriter(tcpClient.GetStream(), Encoding.ASCII);
             {
-                stream.Write(ob + "\n");
+                stream.Write(JsonConvert.SerializeObject(command) + "\n");
                 stream.Flush();
                 Console.WriteLine("sent!");
             }
@@ -222,12 +191,7 @@ namespace Server
 
         private void AddMessage(string name, string time, string message, TcpClient tcpClient)
         {
-            Command addMessageCommand = new Command()
-            {
-                id = "addMessage",
-                data = new string[] { name, time, message }
-            };
-            SendData(JsonConvert.SerializeObject(addMessageCommand), tcpClient);
+            SendData("addMessage", new string[] { name, time, message }, tcpClient);
         }
 
         public static string ReadJsonMessage(TcpClient client)
@@ -236,8 +200,7 @@ namespace Server
             {
                 Console.WriteLine("reading message");
                 string message = "";
-                string line = "";
-
+            
                 while (stream.Peek() != -1)
                 {
                     Console.WriteLine("message: " + message);
