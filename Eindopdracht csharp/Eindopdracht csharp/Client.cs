@@ -83,7 +83,7 @@ namespace Eindopdracht_csharp
 
         }
 
-        private void Listen()
+        private async void Listen()
         {
             while (true)
             {
@@ -109,17 +109,7 @@ namespace Eindopdracht_csharp
                         //server checks if login info already exists
                         case "login":
                             {
-                                /*                            resultIsValid = true;
-                                                            if ((bool)data == true)
-                                                            {
-                                                                //show gui login successful
-                                                                result = true;
-                                                            }
-                                                            else
-                                                            {
-                                                                //show gui login failed 
-                                                                result = false;
-                                                            }*/
+
                                 Console.WriteLine("message " + data);
                                 Program.loginScreen.AuthenticateLogin((bool?)data);
 
@@ -127,14 +117,7 @@ namespace Eindopdracht_csharp
                             }
                         case "register":
                             {
-                                /*                            resultIsValid = true;
-                                                            if ((bool)data == false)
-                                                            {
-                                                                //show gui register successful
-                                                            } else
-                                                            {
-                                                                //show gui register failed
-                                                            }*/
+
                                 Program.loginScreen.CreateAccountResponse(data);
 
                                 break;
@@ -143,9 +126,13 @@ namespace Eindopdracht_csharp
                             {
                                 //show string[] in gui messages
                                 //messages = data.ToObject<string[]>();
-                                Console.WriteLine("haha");
-                                //Task.Run(async() => await RefreshChat(data.ToObject<string[][]>()));
-                                RefreshChat(data.ToObject<string[][]>());
+                                //await RefreshChat(data.ToObject<string[][]>());
+
+                                new Thread(() =>
+                                {
+                                    RefreshChat(data.ToObject<string[][]>());
+                                }).Start();
+
                                 break;
                             }
                         case "addMessage":
@@ -188,7 +175,7 @@ namespace Eindopdracht_csharp
                     if (!ChatUsersScreen.chatScreens[i].IsDisposed)
                     {
 
-                        ChatUsersScreen.chatScreens[i].Update(messages);
+                        ChatUsersScreen.chatScreens[i].UpdateChatHistory(messages);
 
                     }
                     

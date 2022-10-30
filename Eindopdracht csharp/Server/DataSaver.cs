@@ -12,13 +12,18 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace Server.DataSaving
 {
-    internal class DataSaver
+    public class DataSaver
     {
 
         public static async Task AddNewClient(string client, string password)
         {
             Directory.CreateDirectory(Path.Combine(Environment.CurrentDirectory, "Clients", client));
             Directory.CreateDirectory(Path.Combine(Environment.CurrentDirectory, "Clients", client, password));
+        }
+
+        public static string GetDirectory()
+        {
+            return Path.Combine(Environment.CurrentDirectory, "Clients");
         }
 
         public static bool ClientExists(string username)
@@ -54,13 +59,30 @@ namespace Server.DataSaving
             Console.WriteLine(client + " - " + otherClient+ " - " + message);
             string pathClient = Path.Combine(Environment.CurrentDirectory, "Clients", client, otherClient);
             string pathOtherClient = Path.Combine(Environment.CurrentDirectory, "Clients", otherClient, client);
+            if (!File.Exists(pathClient))
+            {
+                File.Create(pathClient).Close();
+                
+            }
+            if (!File.Exists(pathOtherClient))
+            {
+                File.Create(pathOtherClient).Close();
+
+            }
+
+            //Console.WriteLine(client + " - " + otherClient+ " - " + message);
+
             if (File.ReadAllLines(pathClient).Length == 0)
             {
                 File.AppendAllText(pathClient, client + "‎" + time + "‎" + message);
-                File.AppendAllText(otherClient, client + "‎" + time + "‎" + message);
+                File.AppendAllText(pathOtherClient, client + "‎" + time + "‎" + message);
             }
-            File.AppendAllText(pathClient, Environment.NewLine +client + "‎" + time + "‎" + message);
-            File.AppendAllText(pathOtherClient, Environment.NewLine + client + "‎" + time + "‎" + message);
+            else
+            {
+                File.AppendAllText(pathClient, Environment.NewLine +client + "‎" + time + "‎" + message);
+                File.AppendAllText(pathOtherClient, Environment.NewLine + client + "‎" + time + "‎" + message);
+            }
+            
         }
 
         public static string[] GetAccounts(string client)

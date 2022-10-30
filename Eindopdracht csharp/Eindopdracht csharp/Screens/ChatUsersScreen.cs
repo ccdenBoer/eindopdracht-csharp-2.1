@@ -45,7 +45,13 @@ namespace Eindopdracht_csharp
             Program.LogOut();
         }
 
-        private void btnChatSelect_Click(object sender, EventArgs e)
+        private async void btnChatSelect_Click(object sender, EventArgs e)
+        {
+            Task task = SelectUsers();
+            await task;
+        }
+
+        private async Task SelectUsers()
         {
             if (lstChatView.SelectedItems != null && lstChatView.SelectedItems.Count > 0)
             {
@@ -64,8 +70,8 @@ namespace Eindopdracht_csharp
                             {
                                 alreadyOpen = true;
                             }
-                            
-                            
+
+
                         }
                     }
 
@@ -75,9 +81,9 @@ namespace Eindopdracht_csharp
                         chatScreen.Show();
                         chatScreens.Add(chatScreen);
                     }
-                    
+
                 }
-                
+
             }
         }
 

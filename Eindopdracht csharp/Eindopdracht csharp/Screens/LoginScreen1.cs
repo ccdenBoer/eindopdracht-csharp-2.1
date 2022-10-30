@@ -32,7 +32,7 @@ namespace Eindopdracht_csharp
         {
             if (txtNameInput.Text.Length > 0 && txtxPasswordInput.Text.Length > 0)
             {
-                Client.SendCommand("login", new Tuple<string, string>(String.Concat(txtNameInput.Text.Where(c => !Char.IsWhiteSpace(c))), String.Concat(txtxPasswordInput.Text.Where(c => !Char.IsWhiteSpace(c)))));
+                Client.SendCommand("login", new Tuple<string, string>(String.Concat(txtNameInput.Text.Where(c => !Char.IsWhiteSpace(c) || c == '‎')), String.Concat(txtxPasswordInput.Text.Where(c => !Char.IsWhiteSpace(c) || c == '‎'))));
             }
             else
             {

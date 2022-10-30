@@ -57,7 +57,7 @@
             // ReceivedChatCollomn
             // 
             this.ReceivedChatCollomn.Text = "Messages";
-            this.ReceivedChatCollomn.Width = 240;
+            this.ReceivedChatCollomn.Width = 480;
             // 
             // SendCollomn
             // 
