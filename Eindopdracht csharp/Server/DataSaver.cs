@@ -15,9 +15,10 @@ namespace Server.DataSaving
     internal class DataSaver
     {
 
-        public static void AddNewClient(string client)
+        public static void AddNewClient(string client, string password)
         {
             Directory.CreateDirectory(Path.Combine(Environment.CurrentDirectory, "Clients", client));
+            Directory.CreateDirectory(Path.Combine(Environment.CurrentDirectory, "Clients", client, password));
         }
 
         public static bool ClientExists(string username)
@@ -25,8 +26,14 @@ namespace Server.DataSaving
             return Directory.Exists(Path.Combine(Environment.CurrentDirectory, "Clients", username));
         }
 
+        public static bool LoginExists(string username, string password)
+        {
+            return Directory.Exists(Path.Combine(Environment.CurrentDirectory, "Clients", username, password));
+        }
+
         public static string[][] GetMessageFile(string client, string otherClient)
         {
+            Console.WriteLine(Environment.CurrentDirectory);
             string pathClient = Path.Combine(Environment.CurrentDirectory, "Clients", client, otherClient);
             string pathOtherClient = Path.Combine(Environment.CurrentDirectory, "Clients", otherClient, client);
 
@@ -59,6 +66,7 @@ namespace Server.DataSaving
 
         public static string[] GetAccounts(string client)
         {
+            Console.WriteLine("client = " + client);
             var accounts = new List<string>();
             foreach (string clientDirectory in Directory.GetDirectories(Path.Combine(Environment.CurrentDirectory, "Clients")))
                 if (clientDirectory != Path.Combine(Environment.CurrentDirectory, "Clients", client))

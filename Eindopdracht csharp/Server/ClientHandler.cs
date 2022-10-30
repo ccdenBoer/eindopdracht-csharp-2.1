@@ -59,18 +59,16 @@ namespace Server
                         {
                             bool status;
 
-                            string username = message.data;
-                            if (DataSaver.ClientExists(username))
-
+                            if (DataSaver.LoginExists((string)message.data.Item1, (string)message.data.Item2))
                             {
                                 status = true;
+                                this.username = (string)message.data.Item1;
                                 Command accountsCommand = new Command()
                                 {
                                     id = "accounts",
                                     data = DataSaver.GetAccounts(username)
 
                                 };
-                                this.username = (string)message.data;
                                 SendData(JsonConvert.SerializeObject(accountsCommand), tcpClient);
                             }
                             else
@@ -92,15 +90,15 @@ namespace Server
                         {
                             bool status;
 
-                            if (DataSaver.ClientExists((string)message.data))
+                            if (DataSaver.ClientExists((string)message.data.Item1))
                             {
                                 status = false;
                             }
                             else
                             {
                                 status = true;
-                                this.username = (string)message.data;
-                                DataSaver.AddNewClient((string)message.data);
+                                this.username = (string)message.data.Item1;
+                                DataSaver.AddNewClient((string)message.data.Item1, (string)message.data.Item2);
                                 Command accountsCommand = new Command()
                                 {
                                     id = "accounts",
