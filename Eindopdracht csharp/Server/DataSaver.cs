@@ -18,7 +18,8 @@ namespace Server.DataSaving
         public static async Task AddNewClient(string client, string password)
         {
             Directory.CreateDirectory(Path.Combine(Environment.CurrentDirectory, "Clients", client));
-            Directory.CreateDirectory(Path.Combine(Environment.CurrentDirectory, "Clients", client, password));
+            using (StreamWriter file = File.CreateText(Path.Combine(Environment.CurrentDirectory, "Clients", client, client)))
+                file.WriteLine(password);
         }
 
         public static string GetDirectory()
@@ -33,9 +34,25 @@ namespace Server.DataSaving
 
         public static bool LoginExists(string username, string password)
         {
-            return Directory.Exists(Path.Combine(Environment.CurrentDirectory, "Clients", username, password));
+            if(Directory.Exists(Path.Combine(Environment.CurrentDirectory, "Clients", username)))
+            {
+                Console.WriteLine("username correct");
+                if (File.ReadAllLines(Path.Combine(Environment.CurrentDirectory, "Clients", username, username))[0].Equals(password))
+                {
+                    return true;
+                } else
+                {
+                    Console.WriteLine("password incorrect");
+                    return false;
+                }
+            } else
+            {
+                Console.WriteLine("username incorrect");
+                return false;
+            }
+            
+                ;
         }
-
         public static string[][] GetMessageFile(string client, string otherClient)
         {
             string pathClient = Path.Combine(Environment.CurrentDirectory, "Clients", client, otherClient);
