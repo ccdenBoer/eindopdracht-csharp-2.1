@@ -53,12 +53,8 @@ namespace Eindopdracht_csharp
 
             if (e.KeyChar == (char)Keys.Return && txtChatInput.Text.Length > 0)
             {
-                Command sendMessageCommand = new Command() {
-                    id = "send",
-                    data = new Tuple<string, string, string>(chatName, DateTime.Now.ToString(), txtChatInput.Text)
-                };
                 Console.WriteLine(txtChatInput.Text);
-                Client.SendData(JsonConvert.SerializeObject(sendMessageCommand));
+                Client.SendCommand("send", new Tuple<string, string, string>(chatName, DateTime.Now.ToString(), txtChatInput.Text));
 
                 AddMessage("You", DateTime.Now.ToString(), txtChatInput.Text, true);
                 
@@ -177,13 +173,7 @@ namespace Eindopdracht_csharp
         private void RequestMessages()
         {
             Console.WriteLine($"Requesting more messages for {this.chatName}, has {totalMessages} messages");
-            Command sendMessageCommand = new Command()
-            {
-                id = "requestMessages",
-                data = new Tuple<string, int>(this.chatName, totalMessages)
-            };
-            Console.WriteLine($"Requesting more messages for {this.chatName}, has {totalMessages} messages");
-            Client.SendData(JsonConvert.SerializeObject(sendMessageCommand));
+            Client.SendCommand("requestMessages", new Tuple<string, int>(this.chatName, totalMessages));
         }
     }
     

@@ -25,11 +25,6 @@ namespace Server
             thread.Start();
         }
 
-        public ClientHandler()
-        {
-            this.tcpClient = null;
-        }
-
         public async void HandleClient()
         {
             while (true)
@@ -63,25 +58,14 @@ namespace Server
                             {
                                 status = true;
                                 this.username = (string)message.data.Item1;
-                                Command accountsCommand = new Command()
-                                {
-                                    id = "accounts",
-                                    data = DataSaver.GetAccounts(username)
-
-                                };
-                                SendData(JsonConvert.SerializeObject(accountsCommand), tcpClient);
+                                SendCommand("accounts", DataSaver.GetAccounts(username), tcpClient);
                             }
                             else
                             {
                                 status = false;
 
                             }
-                            Command loginCommand = new Command()
-                            {
-                                id = "login",
-                                data = status
-                            };
-                            SendData(JsonConvert.SerializeObject(loginCommand), tcpClient);
+                            SendCommand("login", status, tcpClient);
                             break;
                         }
 
@@ -99,35 +83,21 @@ namespace Server
                                 status = true;
                                 this.username = (string)message.data.Item1;
                                 Task task = DataSaver.AddNewClient((string)message.data.Item1, (string)message.data.Item2);
-
-                                Command accountsCommand = new Command()
-                                {
-                                    id = "accounts",
-                                    data = DataSaver.GetAccounts(username)
-
-                                };
-                                SendData(JsonConvert.SerializeObject(accountsCommand), tcpClient);
-
+                                SendCommand("accounts", DataSaver.GetAccounts(username), tcpClient);
                                 await task;
                             }
-                            Command registerCommand = new Command()
-                            {
-                                id = "login",
-                                data = status
-
-                            };
-                            SendData(JsonConvert.SerializeObject(registerCommand), tcpClient);
+                            SendCommand("login", status, tcpClient);
                             break;
                         }
                     case "requestMessages":
                         {
                             string[][] data;
-                            string[][] a = DataSaver.GetMessageFile(this.username, (string)message.data.Item1);
-                            Array.Reverse(a);
-                            int messagesLeft = a.Length - (int)message.data.Item2-2;
+                            string[][] allData = DataSaver.GetMessageFile(this.username, (string)message.data.Item1);
+                            Array.Reverse(allData);
+                            int messagesLeft = allData.Length - (int)message.data.Item2-2;
                             Console.WriteLine(messagesLeft);
                             Console.WriteLine((int)message.data.Item2);
-                            Console.WriteLine(a.Length);
+                            Console.WriteLine(allData.Length);
                             
                             if(messagesLeft <= 0)
                             {
@@ -139,48 +109,40 @@ namespace Server
                                 if(messagesLeft >= 20)
                                 {
                                     Console.WriteLine("0 messages full 20");
-                                    data = a[(int)message.data.Item2..((int)message.data.Item2+20)];
+                                    data = allData[(int)message.data.Item2..((int)message.data.Item2+20)];
                                 } else
                                 {
                                     Console.WriteLine("0 messages less than 20");
-                                    data = a[(int)message.data.Item2..messagesLeft];
+                                    data = allData[(int)message.data.Item2..messagesLeft];
                                 }
                             } else if(messagesLeft >= 10)
                             {
                                 Console.WriteLine("10 more messages");
-                                data = a[(int)message.data.Item2..((int)message.data.Item2 + 10)];
+                                data = allData[(int)message.data.Item2..((int)message.data.Item2 + 10)];
                             } else
                             {
                                 Console.WriteLine("last messages");
-                                Console.WriteLine((int)message.data.Item2..messagesLeft);
-                                data = a[(int)message.data.Item2..(messagesLeft+ (int)message.data.Item2)];
+                                data = allData[(int)message.data.Item2..(messagesLeft+ (int)message.data.Item2)];
                             }
-                            List<string[]> b = new List<string[]>();
-                            b.Add(new string[] { (string)message.data.Item1, "", "" });
-                            Console.WriteLine(b[0]);
+                            List<string[]> dataList = new List<string[]>();
+                            dataList.Add(new string[] { (string)message.data.Item1, "", "" });
+                            Console.WriteLine(dataList[0]);
                             if (data != null)
                             {
                                 foreach (string[] line in data)
                                 {
-                                    b.Add(line);
+                                    dataList.Add(line);
                                     Console.WriteLine(line[2]);
                                 }
                             }
                             
                             //Array.Reverse(data);
-                            Command updateCommand = new Command()
-                            {
-                                id = "update",
-                                data = b
-
-                            };
-                            Console.WriteLine("send "+ b.Count +" messages");
-                            SendData(JsonConvert.SerializeObject(updateCommand), tcpClient);
+                            Console.WriteLine("send "+ dataList.Count +" messages");
+                            SendCommand("update", dataList, tcpClient);
                             break;
                         }
                     case "send":
                         {
-                            //Console.WriteLine((string)message.data.Item1 + " - " + (string)message.data.Item2);
                             Task task = DataSaver.WriteMessageFile(this.username, (string)message.data.Item1, (string)message.data.Item2, (string)message.data.Item3);
                             foreach (ClientHandler clientHandler in Program._clients)
                             {
@@ -192,13 +154,7 @@ namespace Server
                         }
                     case "accounts":
                         {
-                            Command updateCommand = new Command()
-                            {
-                                id = "accounts",
-                                data = DataSaver.GetAccounts(username)
-
-                            };
-                            SendData(JsonConvert.SerializeObject(updateCommand), tcpClient);
+                            SendCommand("accounts", DataSaver.GetAccounts(username), tcpClient);
                             break;
                         }
 
@@ -210,11 +166,17 @@ namespace Server
             }
         }
 
-        private static void SendData(string ob, TcpClient tcpClient)
+        private static void SendCommand(string id, dynamic data, TcpClient tcpClient)
         {
+            Command command = new Command()
+            {
+                id = id,
+                data = data
+
+            };
             var stream = new StreamWriter(tcpClient.GetStream(), Encoding.ASCII);
             {
-                stream.Write(ob + "\n");
+                stream.Write(JsonConvert.SerializeObject(command) + "\n");
                 stream.Flush();
                 Console.WriteLine("sent!");
             }
@@ -222,12 +184,7 @@ namespace Server
 
         private void AddMessage(string name, string time, string message, TcpClient tcpClient)
         {
-            Command addMessageCommand = new Command()
-            {
-                id = "addMessage",
-                data = new string[] { name, time, message }
-            };
-            SendData(JsonConvert.SerializeObject(addMessageCommand), tcpClient);
+            SendCommand("addMessage", new string[] { name, time, message }, tcpClient);
         }
 
         public static string ReadJsonMessage(TcpClient client)
@@ -236,8 +193,7 @@ namespace Server
             {
                 Console.WriteLine("reading message");
                 string message = "";
-                string line = "";
-
+            
                 while (stream.Peek() != -1)
                 {
                     Console.WriteLine("message: " + message);

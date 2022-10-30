@@ -109,17 +109,6 @@ namespace Eindopdracht_csharp
                         //server checks if login info already exists
                         case "login":
                             {
-                                /*                            resultIsValid = true;
-                                                            if ((bool)data == true)
-                                                            {
-                                                                //show gui login successful
-                                                                result = true;
-                                                            }
-                                                            else
-                                                            {
-                                                                //show gui login failed 
-                                                                result = false;
-                                                            }*/
                                 Console.WriteLine("message " + data);
                                 Program.loginScreen.AuthenticateLogin((bool?)data);
 
@@ -127,14 +116,6 @@ namespace Eindopdracht_csharp
                             }
                         case "register":
                             {
-                                /*                            resultIsValid = true;
-                                                            if ((bool)data == false)
-                                                            {
-                                                                //show gui register successful
-                                                            } else
-                                                            {
-                                                                //show gui register failed
-                                                            }*/
                                 Program.loginScreen.CreateAccountResponse(data);
 
                                 break;
@@ -143,7 +124,6 @@ namespace Eindopdracht_csharp
                             {
                                 //show string[] in gui messages
                                 //messages = data.ToObject<string[]>();
-                                Console.WriteLine("haha");
                                 //Task.Run(async() => await RefreshChat(data.ToObject<string[][]>()));
                                 RefreshChat(data.ToObject<string[][]>());
                                 break;
@@ -221,7 +201,6 @@ namespace Eindopdracht_csharp
             {
                 Console.WriteLine("reading message");
                 string message = "";
-                string line = "";
 
                 while (stream.Peek() != -1)
                 {
@@ -244,22 +223,6 @@ namespace Eindopdracht_csharp
             }
         }
 
-        public static void SendData(string ob)
-        {
-            var stream = new StreamWriter(tcpClient.GetStream(), Encoding.ASCII);
-            {
-                stream.Write(ob + "\n");
-                stream.Flush();
-                Console.WriteLine("sent!");
-            }
-        }
-
-        //"login" send username to the server
-        //"register" send username to the server [string]
-        //"update" send username of person it wants to chat to [string]
-        //"send" send username of person it wants to chat to and the message it sent Tuple<[string], [string]>
-
-       
         public static void SendCommand(string id, dynamic data)
         {
             Command command = new Command
@@ -267,8 +230,15 @@ namespace Eindopdracht_csharp
                 id = id,
                 data = data
             };
-            SendData(JsonConvert.SerializeObject(command));
+
+            var stream = new StreamWriter(tcpClient.GetStream(), Encoding.ASCII);
+            {
+                stream.Write(JsonConvert.SerializeObject(command) + "\n");
+                stream.Flush();
+                Console.WriteLine("sent!");
+            }
         }
+
         public static string[] GetAccounts()
         {
             Console.WriteLine("trying to get account");
