@@ -19,6 +19,7 @@ namespace Server.DataSaving
         {
             Directory.CreateDirectory(Path.Combine(Environment.CurrentDirectory, "Clients", client));
             Directory.CreateDirectory(Path.Combine(Environment.CurrentDirectory, "Clients", client, password));
+
         }
 
         public static bool ClientExists(string username)

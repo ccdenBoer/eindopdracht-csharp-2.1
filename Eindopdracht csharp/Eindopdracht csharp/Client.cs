@@ -244,11 +244,17 @@ namespace Eindopdracht_csharp
             }
         }
 
-        public static void SendData(string ob)
+        public static void SendData(string id, dynamic data)
         {
+            Command command = new Command
+            {
+                id = id,
+                data = data
+            };
+
             var stream = new StreamWriter(tcpClient.GetStream(), Encoding.ASCII);
             {
-                stream.Write(ob + "\n");
+                stream.Write(JsonConvert.SerializeObject(command) + "\n");
                 stream.Flush();
                 Console.WriteLine("sent!");
             }
@@ -259,20 +265,10 @@ namespace Eindopdracht_csharp
         //"update" send username of person it wants to chat to [string]
         //"send" send username of person it wants to chat to and the message it sent Tuple<[string], [string]>
 
-       
-        public static void SendCommand(string id, dynamic data)
-        {
-            Command command = new Command
-            {
-                id = id,
-                data = data
-            };
-            SendData(JsonConvert.SerializeObject(command));
-        }
         public static string[] GetAccounts()
         {
             Console.WriteLine("trying to get account");
-            SendCommand("accounts", null);
+            SendData("accounts", null);
 
             while (!accountsIsValid)
             {

@@ -32,7 +32,7 @@ namespace Eindopdracht_csharp
         {
             if (txtNameInput.Text.Length > 0 && txtxPasswordInput.Text.Length > 0)
             {
-                Client.SendCommand("login", new Tuple<string, string>(String.Concat(txtNameInput.Text.Where(c => !Char.IsWhiteSpace(c))), String.Concat(txtxPasswordInput.Text.Where(c => !Char.IsWhiteSpace(c)))));
+                Client.SendData("login", new Tuple<string, string>(String.Concat(txtNameInput.Text.Where(c => !Char.IsWhiteSpace(c))), String.Concat(txtxPasswordInput.Text.Where(c => !Char.IsWhiteSpace(c)))));
             }
             else
             {
@@ -80,7 +80,7 @@ namespace Eindopdracht_csharp
         {
             if (txtNameInput.Text.Length > 0 && txtxPasswordInput.Text.Length > 0)
             {
-                Client.SendCommand("register", new Tuple<string, string>(String.Concat(txtNameInput.Text.Where(c => !Char.IsWhiteSpace(c))), String.Concat(txtxPasswordInput.Text.Where(c => !Char.IsWhiteSpace(c)))));
+                Client.SendData("register", new Tuple<string, string>(String.Concat(txtNameInput.Text.Where(c => !Char.IsWhiteSpace(c))), String.Concat(txtxPasswordInput.Text.Where(c => !Char.IsWhiteSpace(c)))));
             }
             else
             {
