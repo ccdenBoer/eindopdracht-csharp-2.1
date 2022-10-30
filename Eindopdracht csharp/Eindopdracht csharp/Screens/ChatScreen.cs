@@ -54,7 +54,7 @@ namespace Eindopdracht_csharp
             if (e.KeyChar == (char)Keys.Return && txtChatInput.Text.Length > 0)
             {
                 Console.WriteLine(txtChatInput.Text);
-                Client.SendData("send", new Tuple<string, string, string>(chatName, DateTime.Now.ToString(), txtChatInput.Text));
+                Client.SendCommand("send", new Tuple<string, string, string>(chatName, DateTime.Now.ToString(), txtChatInput.Text));
 
                 AddMessage("You", DateTime.Now.ToString(), txtChatInput.Text, true);
                 
@@ -173,7 +173,7 @@ namespace Eindopdracht_csharp
         private void RequestMessages()
         {
             Console.WriteLine($"Requesting more messages for {this.chatName}, has {totalMessages} messages");
-            Client.SendData("requestMessages", new Tuple<string, int>(this.chatName, totalMessages));
+            Client.SendCommand("requestMessages", new Tuple<string, int>(this.chatName, totalMessages));
         }
     }
     
