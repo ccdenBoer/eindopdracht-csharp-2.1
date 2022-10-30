@@ -30,7 +30,7 @@ namespace Server
             this.tcpClient = null;
         }
 
-        public void HandleClient()
+        public async void HandleClient()
         {
             while (true)
             {
@@ -98,7 +98,8 @@ namespace Server
                             {
                                 status = true;
                                 this.username = (string)message.data.Item1;
-                                DataSaver.AddNewClient((string)message.data.Item1, (string)message.data.Item2);
+                                Task task = DataSaver.AddNewClient((string)message.data.Item1, (string)message.data.Item2);
+
                                 Command accountsCommand = new Command()
                                 {
                                     id = "accounts",
@@ -106,6 +107,8 @@ namespace Server
 
                                 };
                                 SendData(JsonConvert.SerializeObject(accountsCommand), tcpClient);
+
+                                await task;
                             }
                             Command registerCommand = new Command()
                             {
@@ -178,12 +181,13 @@ namespace Server
                     case "send":
                         {
                             //Console.WriteLine((string)message.data.Item1 + " - " + (string)message.data.Item2);
-                            DataSaver.WriteMessageFile(this.username, (string)message.data.Item1, (string)message.data.Item2, (string)message.data.Item3);
+                            Task task = DataSaver.WriteMessageFile(this.username, (string)message.data.Item1, (string)message.data.Item2, (string)message.data.Item3);
                             foreach (ClientHandler clientHandler in Program._clients)
                             {
                                 if (clientHandler.username == (string)message.data.Item1)
                                     clientHandler.AddMessage(username, (string)message.data.Item2, (string)message.data.Item3, clientHandler.tcpClient);
                             }
+                            await task;
                             break;
                         }
                     case "accounts":
