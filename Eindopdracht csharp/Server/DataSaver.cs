@@ -15,7 +15,7 @@ namespace Server.DataSaving
     internal class DataSaver
     {
 
-        public static void AddNewClient(string client, string password)
+        public static async Task AddNewClient(string client, string password)
         {
             Directory.CreateDirectory(Path.Combine(Environment.CurrentDirectory, "Clients", client));
             Directory.CreateDirectory(Path.Combine(Environment.CurrentDirectory, "Clients", client, password));
@@ -33,7 +33,6 @@ namespace Server.DataSaving
 
         public static string[][] GetMessageFile(string client, string otherClient)
         {
-            Console.WriteLine(Environment.CurrentDirectory);
             string pathClient = Path.Combine(Environment.CurrentDirectory, "Clients", client, otherClient);
             string pathOtherClient = Path.Combine(Environment.CurrentDirectory, "Clients", otherClient, client);
 
@@ -45,12 +44,12 @@ namespace Server.DataSaving
 
             List<string[]> a  = new List<string[]>();
             a.Add(new string[] {otherClient, "", "" });
-            foreach (string line in File.ReadAllLines(pathClient))
+            foreach (string line in  File.ReadAllLines(pathClient))
                 a.Add(line.Split("‎"));
 
             return a.ToArray();
         }
-        public static void WriteMessageFile(string client, string otherClient, string time, string message)
+        public static async Task WriteMessageFile(string client, string otherClient, string time, string message)
         {
             Console.WriteLine(client + " - " + otherClient+ " - " + message);
             string pathClient = Path.Combine(Environment.CurrentDirectory, "Clients", client, otherClient);
