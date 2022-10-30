@@ -25,6 +25,14 @@ namespace Eindopdracht_csharp
             RequestMessages();
         }
 
+        //for testing only
+        public ChatScreen(string chatName, bool testing)
+        {
+            InitializeComponent();
+            this.txtChatInput.KeyPress += new System.Windows.Forms.KeyPressEventHandler(CheckEnterKeyPress);
+            SetChatName(chatName);
+        }
+
         private void txtChatInput_TextChanged(object sender, EventArgs e)
         {
 
@@ -71,7 +79,7 @@ namespace Eindopdracht_csharp
         {
             this.Dispose();
         }
-        public void Update(string[][] messages)
+        public void UpdateChatHistory(string[][] messages)
         {
             Invoke(new Action(() => btnLoadMore.Enabled = true));
             //lstChatView.ResetText();
@@ -166,6 +174,16 @@ namespace Eindopdracht_csharp
                 //add an empty line for clarity
                 lstChatView.Items.Insert(position + lineNr, new ListViewItem());
             }));
+        }
+
+        public ListView.ListViewItemCollection GetChatViewItems()
+        {
+            return lstChatView.Items;
+        }
+
+        public int GetTotalMessages()
+        {
+            return totalMessages;
         }
 
         private void btnLoadMore_Click(object sender, EventArgs e)

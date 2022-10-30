@@ -188,7 +188,7 @@ namespace Eindopdracht_csharp
                     if (!ChatUsersScreen.chatScreens[i].IsDisposed)
                     {
 
-                        ChatUsersScreen.chatScreens[i].Update(messages);
+                        ChatUsersScreen.chatScreens[i].UpdateChatHistory(messages);
 
                     }
                     
