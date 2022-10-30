@@ -123,7 +123,7 @@ namespace Server
                             string[][] data;
                             string[][] a = DataSaver.GetMessageFile(this.username, (string)message.data.Item1);
                             Array.Reverse(a);
-                            int messagesLeft = a.Length - (int)message.data.Item2-1;
+                            int messagesLeft = a.Length - (int)message.data.Item2-2;
                             Console.WriteLine(messagesLeft);
                             Console.WriteLine((int)message.data.Item2);
                             Console.WriteLine(a.Length);
@@ -131,7 +131,7 @@ namespace Server
                             if(messagesLeft <= 0)
                             {
                                 Console.WriteLine("none");
-                                a = null;
+                                data = null;
                             } else if((int)message.data.Item2 == 0)
                             {
                                 Console.WriteLine("0 messages");
@@ -151,14 +151,19 @@ namespace Server
                             } else
                             {
                                 Console.WriteLine("last messages");
-                                data = a[(int)message.data.Item2..messagesLeft];
+                                Console.WriteLine((int)message.data.Item2..messagesLeft);
+                                data = a[(int)message.data.Item2..(messagesLeft+ (int)message.data.Item2)];
                             }
                             List<string[]> b = new List<string[]>();
                             b.Add(new string[] { (string)message.data.Item1, "", "" });
-                            if (a != null)
+                            Console.WriteLine(b[0]);
+                            if (data != null)
                             {
-                                foreach (string[] line in a)
+                                foreach (string[] line in data)
+                                {
                                     b.Add(line);
+                                    Console.WriteLine(line[2]);
+                                }
                             }
                             
                             //Array.Reverse(data);
@@ -168,6 +173,7 @@ namespace Server
                                 data = b
 
                             };
+                            Console.WriteLine("send "+ b.Count +" messages");
                             SendData(JsonConvert.SerializeObject(updateCommand), tcpClient);
                             break;
                         }
