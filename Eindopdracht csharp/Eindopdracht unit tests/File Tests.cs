@@ -13,8 +13,8 @@ namespace Eindopdracht_unit_tests
             File.Delete(Path.Combine(DataSaver.GetDirectory(), "TestClient", "TestClient2"));
             File.Delete(Path.Combine(DataSaver.GetDirectory(), "TestClient2", "TestClient"));
 
-            DataSaver.AddNewClient("TestClient");
-            DataSaver.AddNewClient("TestClient2");
+            DataSaver.AddNewClient("TestClient", "1234");
+            DataSaver.AddNewClient("TestClient2", "1234");
             Assert.IsTrue(Directory.Exists(Path.Combine(DataSaver.GetDirectory(), "TestClient")), "Client directory was not made");
 
             Assert.IsTrue(DataSaver.ClientExists("TestClient"), "Client folder was not found");
@@ -25,8 +25,8 @@ namespace Eindopdracht_unit_tests
             File.Delete(Path.Combine(DataSaver.GetDirectory(), "TestClient", "TestClient2"));
             File.Delete(Path.Combine(DataSaver.GetDirectory(), "TestClient2", "TestClient"));
 
-            DataSaver.AddNewClient("TestClient");
-            DataSaver.AddNewClient("TestClient2");
+            DataSaver.AddNewClient("TestClient", "1234");
+            DataSaver.AddNewClient("TestClient2", "1234");
 
             string time = DateTime.Now.ToString();
 
@@ -49,8 +49,8 @@ namespace Eindopdracht_unit_tests
             File.Delete(Path.Combine(DataSaver.GetDirectory(), "TestClient", "TestClient2"));
             File.Delete(Path.Combine(DataSaver.GetDirectory(), "TestClient2", "TestClient"));
 
-            DataSaver.AddNewClient("TestClient");
-            DataSaver.AddNewClient("TestClient2");
+            DataSaver.AddNewClient("TestClient", "1234");
+            DataSaver.AddNewClient("TestClient2", "1234");
 
             string time = DateTime.Now.ToString();
 

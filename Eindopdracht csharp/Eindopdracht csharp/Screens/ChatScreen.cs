@@ -41,7 +41,7 @@ namespace Eindopdracht_csharp
         public void SetChatName(string name)
         {
             this.chatName = name;
-            //this.Text = chatName;
+            this.Text = "Chat with - " + chatName;
             this.lstChatView.Columns[0].Text = "Chatting with: " + chatName;
         }
 
