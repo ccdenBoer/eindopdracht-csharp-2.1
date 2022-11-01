@@ -8,7 +8,7 @@ namespace Eindopdracht_unit_tests
     public class UnitTest1
     {
         [TestMethod]
-        public void TestSavingNewAccount()
+        public async Task TestSavingNewAccount()
         {
             if (File.Exists(Path.Combine(DataSaver.GetDirectory(), "TestClient", "TestClient2")))
                 File.Delete(Path.Combine(DataSaver.GetDirectory(), "TestClient", "TestClient2"));
@@ -16,8 +16,8 @@ namespace Eindopdracht_unit_tests
             if (File.Exists(Path.Combine(DataSaver.GetDirectory(), "TestClient2", "TestClient")))
                 File.Delete(Path.Combine(DataSaver.GetDirectory(), "TestClient2", "TestClient"));
 
-            DataSaver.AddNewClient("TestClient", "1234").GetAwaiter().GetResult();
-            DataSaver.AddNewClient("TestClient2", "1234").GetAwaiter().GetResult();
+            await DataSaver.AddNewClient("TestClient", "1234");
+            await DataSaver.AddNewClient("TestClient2", "1234");
             Assert.IsTrue(Directory.Exists(Path.Combine(DataSaver.GetDirectory(), "TestClient")), "Client directory was not made");
 
             Assert.IsTrue(DataSaver.ClientExists("TestClient"), "Client folder was not found");
@@ -26,7 +26,7 @@ namespace Eindopdracht_unit_tests
             File.Delete(Path.Combine(DataSaver.GetDirectory(), "TestClient2", "TestClient"));
         }
         [TestMethod]
-        public void TestSavingMessage()
+        public async Task TestSavingMessage()
         {
             if(File.Exists(Path.Combine(DataSaver.GetDirectory(), "TestClient", "TestClient2")))
                 File.Delete(Path.Combine(DataSaver.GetDirectory(), "TestClient", "TestClient2"));
@@ -34,12 +34,12 @@ namespace Eindopdracht_unit_tests
             if(File.Exists(Path.Combine(DataSaver.GetDirectory(), "TestClient2", "TestClient")))
                 File.Delete(Path.Combine(DataSaver.GetDirectory(), "TestClient2", "TestClient"));
 
-            DataSaver.AddNewClient("TestClient", "1234").GetAwaiter().GetResult();
-            DataSaver.AddNewClient("TestClient2", "1234").GetAwaiter().GetResult();
+            await DataSaver.AddNewClient("TestClient", "1234");
+            await DataSaver.AddNewClient("TestClient2", "1234");
 
             string time = DateTime.Now.ToString();
 
-            DataSaver.WriteMessageFile("TestClient2", "TestClient", time, "Here is a message").GetAwaiter().GetResult();
+            await DataSaver.WriteMessageFile("TestClient2", "TestClient", time, "Here is a message");
 
             
             Assert.IsTrue(File.Exists(Path.Combine(DataSaver.GetDirectory(), "TestClient", "TestClient2")), "Chat file not made");
@@ -51,7 +51,7 @@ namespace Eindopdracht_unit_tests
             File.Delete(Path.Combine(DataSaver.GetDirectory(), "TestClient2", "TestClient"));
         }
         [TestMethod]
-        public void TestReadingMessage()
+        public async Task TestReadingMessage()
         {
             if (File.Exists(Path.Combine(DataSaver.GetDirectory(), "TestClient", "TestClient2")))
                 File.Delete(Path.Combine(DataSaver.GetDirectory(), "TestClient", "TestClient2"));
@@ -59,12 +59,12 @@ namespace Eindopdracht_unit_tests
             if (File.Exists(Path.Combine(DataSaver.GetDirectory(), "TestClient2", "TestClient")))
                 File.Delete(Path.Combine(DataSaver.GetDirectory(), "TestClient2", "TestClient"));
 
-            DataSaver.AddNewClient("TestClient", "1234").GetAwaiter().GetResult();
-            DataSaver.AddNewClient("TestClient2", "1234").GetAwaiter().GetResult();
+            await DataSaver.AddNewClient("TestClient", "1234");
+            await DataSaver.AddNewClient("TestClient2", "1234");
 
             string time = DateTime.Now.ToString();
 
-            DataSaver.WriteMessageFile("TestClient2", "TestClient", time, "Here is a message").GetAwaiter().GetResult();
+            await DataSaver.WriteMessageFile("TestClient2", "TestClient", time, "Here is a message");
 
             List<string[]> expectedAnswerList = new List<string[]>();
             expectedAnswerList.Add(new string[] {"TestClient2","","" });
