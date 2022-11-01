@@ -91,6 +91,11 @@ namespace Eindopdracht_csharp
                 {
                     Console.WriteLine("awaiting message");
                     dynamic message = JsonConvert.DeserializeObject(ReadJsonMessage(tcpClient));
+                    if (message == null)
+                    {
+                        Program.Disconnect();
+                        break;
+                    }
                     string id = "";
                     dynamic data = "";
                     Console.WriteLine("received " + message);
@@ -202,29 +207,25 @@ namespace Eindopdracht_csharp
 
         public static string ReadJsonMessage(TcpClient client)
         {
-            var stream = new StreamReader(client.GetStream(), Encoding.ASCII);
+            try
             {
-                Console.WriteLine("reading message");
-                string message = "";
-
-                while (stream.Peek() != -1)
+                var stream = new StreamReader(client.GetStream(), Encoding.ASCII);
                 {
-                    Console.WriteLine("message: " + message);
-                    message += stream.ReadLine();
+                    Console.WriteLine("reading message");
+                    string message = "";
+
+                    while (stream.Peek() != -1)
+                    {
+                        Console.WriteLine("message: " + message);
+                        message += stream.ReadLine();
+                    }
+                    Console.WriteLine("finished message");
+
+                    return message;
                 }
-                Console.WriteLine("finished message");
-
-                return message;
-            }
-        }
-
-
-        public static void WriteJsonMessage(TcpClient client, string jsonMessage)
-        {
-            var stream = new StreamWriter(client.GetStream(), Encoding.ASCII);
+            } catch
             {
-                stream.Write(jsonMessage);
-                stream.Flush();
+                return "";
             }
         }
 

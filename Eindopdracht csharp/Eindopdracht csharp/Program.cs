@@ -23,9 +23,12 @@ namespace Eindopdracht_csharp
         {
             loginScreen.Show();
             chatUsersScreen.Close();
-
         }
 
+        internal static void Disconnect()
+        {
+            Console.WriteLine("Server disconnected");
+        }
 
         /// <summary>
         ///  The main entry point for the application.
