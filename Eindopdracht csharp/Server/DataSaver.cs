@@ -18,8 +18,7 @@ namespace Server.DataSaving
         public static async Task AddNewClient(string client, string password)
         {
             Directory.CreateDirectory(Path.Combine(Environment.CurrentDirectory, "Clients", client));
-            using (StreamWriter file = File.CreateText(Path.Combine(Environment.CurrentDirectory, "Clients", client, client)))
-                file.WriteLine(password);
+            await File.WriteAllTextAsync(Path.Combine(Environment.CurrentDirectory, "Clients", client, client), password);
         }
 
         public static string GetDirectory()
@@ -91,13 +90,13 @@ namespace Server.DataSaving
 
             if (File.ReadAllLines(pathClient).Length == 0)
             {
-                File.AppendAllText(pathClient, client + "‎" + time + "‎" + message);
-                File.AppendAllText(pathOtherClient, client + "‎" + time + "‎" + message);
+                await File.AppendAllTextAsync(pathClient, client + "‎" + time + "‎" + message);
+                await File.AppendAllTextAsync(pathOtherClient, client + "‎" + time + "‎" + message);
             }
             else
             {
-                File.AppendAllText(pathClient, Environment.NewLine +client + "‎" + time + "‎" + message);
-                File.AppendAllText(pathOtherClient, Environment.NewLine + client + "‎" + time + "‎" + message);
+                await File.AppendAllTextAsync(pathClient, Environment.NewLine +client + "‎" + time + "‎" + message);
+                await File.AppendAllTextAsync(pathOtherClient, Environment.NewLine + client + "‎" + time + "‎" + message);
             }
             
         }

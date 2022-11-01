@@ -82,9 +82,8 @@ namespace Server
                             {
                                 status = true;
                                 this.username = (string)message.data.Item1;
-                                Task task = DataSaver.AddNewClient((string)message.data.Item1, (string)message.data.Item2);
+                                await DataSaver.AddNewClient((string)message.data.Item1, (string)message.data.Item2);
                                 SendCommand("accounts", DataSaver.GetAccounts(username), tcpClient);
-                                await task;
                             }
                             SendCommand("login", status, tcpClient);
                             break;
@@ -143,13 +142,12 @@ namespace Server
                         }
                     case "send":
                         {
-                            Task task = DataSaver.WriteMessageFile(this.username, (string)message.data.Item1, (string)message.data.Item2, (string)message.data.Item3);
+                            await DataSaver.WriteMessageFile(this.username, (string)message.data.Item1, (string)message.data.Item2, (string)message.data.Item3);
                             foreach (ClientHandler clientHandler in Program._clients)
                             {
                                 if (clientHandler.username == (string)message.data.Item1)
                                     clientHandler.AddMessage(username, (string)message.data.Item2, (string)message.data.Item3, clientHandler.tcpClient);
                             }
-                            await task;
                             break;
                         }
                     case "accounts":
