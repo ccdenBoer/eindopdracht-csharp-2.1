@@ -13,8 +13,8 @@ namespace Eindopdracht_unit_tests
             File.Delete(Path.Combine(DataSaver.GetDirectory(), "TestClient", "TestClient2"));
             File.Delete(Path.Combine(DataSaver.GetDirectory(), "TestClient2", "TestClient"));
 
-            DataSaver.AddNewClient("TestClient", "1234");
-            DataSaver.AddNewClient("TestClient2", "1234");
+            DataSaver.AddNewClient("TestClient", "1234").GetAwaiter().GetResult();
+            DataSaver.AddNewClient("TestClient2", "1234").GetAwaiter().GetResult();
             Assert.IsTrue(Directory.Exists(Path.Combine(DataSaver.GetDirectory(), "TestClient")), "Client directory was not made");
 
             Assert.IsTrue(DataSaver.ClientExists("TestClient"), "Client folder was not found");
@@ -25,12 +25,12 @@ namespace Eindopdracht_unit_tests
             File.Delete(Path.Combine(DataSaver.GetDirectory(), "TestClient", "TestClient2"));
             File.Delete(Path.Combine(DataSaver.GetDirectory(), "TestClient2", "TestClient"));
 
-            DataSaver.AddNewClient("TestClient", "1234");
-            DataSaver.AddNewClient("TestClient2", "1234");
+            DataSaver.AddNewClient("TestClient", "1234").GetAwaiter().GetResult();
+            DataSaver.AddNewClient("TestClient2", "1234").GetAwaiter().GetResult();
 
             string time = DateTime.Now.ToString();
 
-            DataSaver.WriteMessageFile("TestClient2", "TestClient", time, "Here is a message");
+            DataSaver.WriteMessageFile("TestClient2", "TestClient", time, "Here is a message").GetAwaiter().GetResult();
 
             Console.WriteLine(File.ReadAllText(Path.Combine(DataSaver.GetDirectory(), "TestClient2", "TestClient")).ToString() + " - " + "TestClient2‎" + time + "‎Here is a message");
             Console.WriteLine(File.ReadAllText(Path.Combine(DataSaver.GetDirectory(), "TestClient", "TestClient2")).ToString() + " - " + "TestClient2‎" + time + "‎Here is a message");
@@ -49,12 +49,12 @@ namespace Eindopdracht_unit_tests
             File.Delete(Path.Combine(DataSaver.GetDirectory(), "TestClient", "TestClient2"));
             File.Delete(Path.Combine(DataSaver.GetDirectory(), "TestClient2", "TestClient"));
 
-            DataSaver.AddNewClient("TestClient", "1234");
-            DataSaver.AddNewClient("TestClient2", "1234");
+            DataSaver.AddNewClient("TestClient", "1234").GetAwaiter().GetResult();
+            DataSaver.AddNewClient("TestClient2", "1234").GetAwaiter().GetResult();
 
             string time = DateTime.Now.ToString();
 
-            DataSaver.WriteMessageFile("TestClient2", "TestClient", time, "Here is a message");
+            DataSaver.WriteMessageFile("TestClient2", "TestClient", time, "Here is a message").GetAwaiter().GetResult();
 
             List<string[]> expectedAnswerList = new List<string[]>();
             expectedAnswerList.Add(new string[] {"TestClient2","","" });

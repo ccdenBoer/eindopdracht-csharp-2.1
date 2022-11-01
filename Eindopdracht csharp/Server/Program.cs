@@ -18,7 +18,7 @@ namespace Server
             _listener.Start();
             _listener.BeginAcceptTcpClient(new AsyncCallback(OnConnect), null);
 
-            for (; ; );
+            Thread.Sleep(-1);
         }
 
         private static void OnConnect(IAsyncResult ar)
