@@ -47,11 +47,11 @@ namespace Eindopdracht_csharp
 
         private async void btnChatSelect_Click(object sender, EventArgs e)
         {
-            Task task = SelectUsers();
-            await task;
+            SelectUsers();
+            
         }
 
-        private async Task SelectUsers()
+        private void SelectUsers()
         {
             if (lstChatView.SelectedItems != null && lstChatView.SelectedItems.Count > 0)
             {

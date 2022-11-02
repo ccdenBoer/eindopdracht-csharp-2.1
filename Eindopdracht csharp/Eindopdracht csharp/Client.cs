@@ -43,24 +43,6 @@ namespace Eindopdracht_csharp
             this.port = port;
             tcpClient = new TcpClient(ip, port);
 
-
-            //JObject loginRequest = JObject.Parse(ReadJsonMessage(tcpClient));
-            //Command loginRequest = new Command()
-            //{
-            //    id = "login",
-            //    data = "Coen",
-            //};
-
-            //Thread.Sleep(500);
-
-            //Console.WriteLine(JsonConvert.SerializeObject(loginRequest));
-
-            //WriteMessage(tcpClient, JsonConvert.SerializeObject(loginCommand));
-
-            //SendData(JsonConvert.SerializeObject(loginRequest), tcpClient);
-
-
-
             try
             {
                 new Thread(Listen).Start();
