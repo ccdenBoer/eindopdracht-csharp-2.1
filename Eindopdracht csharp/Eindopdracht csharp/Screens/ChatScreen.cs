@@ -61,12 +61,8 @@ namespace Eindopdracht_csharp
 
             if (e.KeyChar == (char)Keys.Return && txtChatInput.Text.Length > 0)
             {
-                Command sendMessageCommand = new Command() {
-                    id = "send",
-                    data = new Tuple<string, string, string>(chatName, DateTime.Now.ToString(), String.Concat(txtChatInput.Text.Where(c => !(c == '‎'))))
-                };
                 Console.WriteLine(txtChatInput.Text);
-                Client.SendCommand("send", new Tuple<string, string, string>(chatName, DateTime.Now.ToString(), txtChatInput.Text));
+                Client.SendCommand("send", new Tuple<string, string, string>(chatName, DateTime.Now.ToString(), String.Concat(txtChatInput.Text.Where(c => !(c == '‎')))));
 
                 AddMessage("You", DateTime.Now.ToString(), txtChatInput.Text, true);
                 
